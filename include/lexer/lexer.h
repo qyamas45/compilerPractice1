@@ -1,0 +1,8 @@
+//
+// Created by alyam on 12/14/2025.
+//
+
+#ifndef COMPILERPRACTICE1_LEXER_H
+#define COMPILERPRACTICE1_LEXER_H
+
+#endif //COMPILERPRACTICE1_LEXER_H

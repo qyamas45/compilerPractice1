@@ -1,0 +1,8 @@
+//
+// Created by alyam on 12/14/2025.
+//
+
+#ifndef COMPILERPRACTICE1_INTTYPE_H
+#define COMPILERPRACTICE1_INTTYPE_H
+
+#endif //COMPILERPRACTICE1_INTTYPE_H

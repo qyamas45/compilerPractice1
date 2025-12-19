@@ -6,7 +6,14 @@
 #define COMPILERPRACTICE1_TYPES_H
 
 
-class Types {
+class Type {
+	public:
+		virtual ~Type() {};
+		virtual bool isIntType(){};
+		virtual bool isFloatType(){};
+		virtual bool isStringType(){};
+	//function types
+
 };
 
 

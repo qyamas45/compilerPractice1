@@ -3,6 +3,9 @@
 Token::Token(const tokenType type, std::string lexeme, const location loc)
     : type(type), lexeme(std::move(lexeme)), loc(loc) {}
 
+Token::Token() : type() {
+};
+
 std::string Token::toString() const {
     std::string str = lexeme;
 

@@ -5,6 +5,7 @@
 #ifndef COMPILERPRACTICE1_LEXER_H
 #define COMPILERPRACTICE1_LEXER_H
 #include <string>
+
 #include "location.h"
 #include "token.h"
 
@@ -16,11 +17,12 @@ class lexer {
     char ch;
     location loc;
     bool addSemicolon;
-    lexer(std::string input) {
+
+    lexer(const std::string &input) {
         this->input = input;
         this->addSemicolon = false;
         this->pos = 0;
-        this->ch = '\0';
+        this->ch = input.empty() ? '\0' : input.at(0);
         this->loc = location();
     }
 

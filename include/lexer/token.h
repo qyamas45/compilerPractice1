@@ -4,6 +4,7 @@
 
 #ifndef COMPILERPRACTICE1_TOKEN_H
 #define COMPILERPRACTICE1_TOKEN_H
+#include <string>
 #include "location.h"
 #include "tokenType.h"
 
@@ -13,6 +14,8 @@ struct Token {
     location loc;
 
     Token(tokenType type, std::string lexeme, location loc);
+
+    Token();
 
     std::string toString() const;
 

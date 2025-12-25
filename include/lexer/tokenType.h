@@ -13,6 +13,7 @@ enum class tokenType {
 
         //KEYWORDS
         IMPORT,
+        FROM,
         IN,
         DEF,
         IF,

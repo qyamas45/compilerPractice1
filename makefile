@@ -21,6 +21,10 @@ $(BUILD_DIR)/%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
+ifeq ($(OS),Windows_NT)
+	rmdir /s /q build
+	rmdir /s /q lexicon
+else
 	rm -rf $(BUILD_DIR) $(TARGET)
-
+endif
 .PHONY: all clean

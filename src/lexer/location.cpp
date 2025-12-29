@@ -2,6 +2,7 @@
 // Created by alyam on 12/14/2025.
 //
 #include "../../include/lexer/location.h"
+#include <iostream>
 location::location() : begin(1,1), end(1,1) {}
 location::location(int line, int column) : begin(line,column), end(line,column) {}
 location::location(position a, position b) : begin(a), end(b){};
@@ -47,12 +48,19 @@ location location::copy() {
     return location(newBegin, newEnd);
 }
 std::string location::toString() const{
-    int endColumn = 0;
+    int endColumn;
+    if (end.column > 0)
+        endColumn = end.column - 1;
+    else
+        endColumn = 0;
     std::string str = begin.toString();
-    if(begin.line < end.column) {
+    //std::cout << std::to_string(begin.line) << " " << std::to_string(end.line) << std::endl;
+    //std::cout << endColumn << std::endl;
+    if(begin.line < end.line) {
         str += "-" + std::to_string(end.line)  + "." + std::to_string(endColumn);
     }
     if(begin.column  < endColumn) {
+
         str += "-" + std::to_string(endColumn);
     }
     return str;

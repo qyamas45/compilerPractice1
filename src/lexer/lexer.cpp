@@ -123,19 +123,39 @@ Token lexer::identifier() {
 }
 Token lexer::number() {
     std::string lexeme;
+    //grab the first number and continue
+    lexeme += ch;
+    consume();
+    //if there is still continue number, consume
     while (isDigit()) {
         lexeme += ch;
         consume();
     }
+    //decimal if ch encounters
+    //ex: .4
     if (ch == '.') {
         addSemicolon = true;
+        //4
+        lexeme += ch;
+        consume();
+
+        //*blank*
+        lexeme += ch;
+        consume();
+        //if there is a continue i.e. .3333
+        //then while loop until it becomes /*blank*
         while (isDigit()) {
             lexeme += ch;
             consume();
         }
     }
-    loc.columns(lexeme.length());
-    if (lexeme.find('.') != std::string::npos) {
+
+
+    std::string lex = lexeme;
+    loc.columns(lex.length());
+    //if value is like 3.45, return real
+    if (lex.find('.') != std::string::npos) {
+
         return Token(tokenType::REAL_LITERAL, lexeme, loc.copy());
     }
     return Token(tokenType::INT_LITERAL, lexeme, loc.copy());

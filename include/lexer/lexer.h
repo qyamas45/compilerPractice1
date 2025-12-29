@@ -38,5 +38,6 @@ class lexer {
     Token identifier();
 
 
+
 };
 #endif //COMPILERPRACTICE1_LEXER_H

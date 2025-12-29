@@ -13,12 +13,12 @@ public:
     int line;
     int column;
 
-    position(const int line, const int column);
-    position addWidth(int const width) const;
-    void lines(const int count);
-    void columns(const int count);
+    position(int line, int column);
+    position addWidth(int width) const;
+    void lines(int count);
+    void columns(int count);
 
-    static int add(const int lhs,  const int rhs);
+    static int add(int lhs,  int rhs);
 
     std::string toString() const;
 

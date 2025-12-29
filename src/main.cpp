@@ -4,7 +4,10 @@
 
 int main()
 {
-	std::string test = "print \"hello world!\" ";
+	std::string test = """"
+						"print \"hello world!\""
+						"var invalid = 3.4"
+					  """";
 	lexer* lex = new lexer(test);
 	Token token{};
 	do {

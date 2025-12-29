@@ -5,6 +5,7 @@
 #ifndef COMPILERPRACTICE1_LOCATION_H
 #define COMPILERPRACTICE1_LOCATION_H
 #include "position.h"
+#include <string>
 class location {
     public:
     position begin;
@@ -20,7 +21,7 @@ class location {
     location addWith(int width);
     location subWidth(int width);
     location copy();
-    std::string toString() const;
+    [[nodiscard]] std::string toString() const;
 
 };
 #endif //COMPILERPRACTICE1_LOCATION_H

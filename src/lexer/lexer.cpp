@@ -267,6 +267,11 @@ Token lexer::nextToken() {
                     loc.columns(1);
                     return Token(tokenType::DIV_EQUAL, "/=", loc.copy());
                 }
+                if (ch == '/') {
+                    consume();
+                    loc.columns(1);
+                    return comment();
+                }
                 return Token(tokenType::DIV, "/", loc.copy());
             case '%':
                 addSemicolon = false;
@@ -309,6 +314,16 @@ Token lexer::nextToken() {
                 consume();
                 loc.columns(1);
                 return Token(tokenType::COMMA, ",", loc.copy());
+
+            case '!':
+                addSemicolon = false;
+                consume();
+                loc.columns(1);
+                if (ch == '=') {
+                    consume();
+                    loc.columns(1);
+                    return Token(tokenType::NOT_EQUAL, "!=", loc.copy());
+                }
             case '<':
                 addSemicolon = false;
                 consume();

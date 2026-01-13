@@ -26,6 +26,8 @@ class lexer {
         this->loc = location();
     }
 
+    lexer();
+
     void consume();
     bool isEOF() const;
     bool isDigit() const;

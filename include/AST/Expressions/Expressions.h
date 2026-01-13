@@ -7,7 +7,8 @@
 #include "../AST.h"
 
 class Expressions : public AST {
-
+public:
+    ~Expressions() override = default;
 };
 
 

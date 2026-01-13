@@ -18,6 +18,7 @@ public:
     int line{};
     int charBegin{};
     int nchildren = 0;
+
     std::vector<std::shared_ptr<AST>> children;
     AST(int pLine, int pCharBegin);
     AST(Token t);

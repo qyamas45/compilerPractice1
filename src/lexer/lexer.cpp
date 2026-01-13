@@ -81,7 +81,7 @@ Token lexer::identifier() {
     else if (lexeme == "pass") {
         addSemicolon = true;
         return Token(tokenType::PASS, "pass", loc.copy());
-    }
+    }   
     else if (lexeme == "true")
         return Token(tokenType::TRUE, "true", loc.copy());
     else if (lexeme == "false")

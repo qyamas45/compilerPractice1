@@ -8,8 +8,11 @@
 
 class Statement : public AST {
 public:
+    virtual ~Statement() = default;
+    Statement() = default;
     Statement(Token t);
     Statement(AST a);
+    Statement(const Statement& statement);
 
 };
 

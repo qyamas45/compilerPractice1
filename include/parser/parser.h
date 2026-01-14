@@ -15,15 +15,20 @@
 #define COMPILERPRACTICE1_PARSER_H
 class Parser {
 public:
-    Parser(lexer* input) : input(input), current(0) {}
+    Parser(lexer* input) : pos(0), input(input), current(0) {
+    }
 
     Token peek() const;
 
     Token peek();
 
+    Token LT(int index);
+
+    tokenType LA(int index);
+
     //Entry
     std::unique_ptr<Program> parseProgram();
-
+    int pos;
 
 private:
 
@@ -39,9 +44,16 @@ private:
     std::vector<Token> lookahead;
     std::vector<int> positions;
 
-    Token consume(tokenType type);
+
     Token previous();
-    bool match(tokenType type);
+
+    void fill(int n);
+
+    void synchronize(int index);
+
+    void consume();
+
+    void match(tokenType type);
     bool check(tokenType type);
 };
 #endif //COMPILERPRACTICE1_PARSER_H

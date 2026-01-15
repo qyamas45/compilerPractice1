@@ -31,11 +31,12 @@ void Parser::consume() {
    //synchronize
 }
 
+bool Parser::expects() const {
+    return !positions.empty();
+}
 Token Parser::peek() {
-    std::cout << lookahead.size() << std::endl;
-    if (current >= lookahead.size()) {
 
-        std::cout << "TRIGGERED: " << std::endl;
+    if (current >= lookahead.size()) {
 
         lookahead.push_back(input->nextToken());
     }
@@ -68,21 +69,41 @@ std::unique_ptr<Program> Parser::parseProgram() {
 
 std::unique_ptr<Statement> Parser::parseStatement() {
 
+    //check if its while,if,for,def,class,try,return
 
-    return parseExpressionStatement();
+
+    //else return expressionStatement
+    return simpleStatement();
+}
+
+std::unique_ptr<Statement> Parser::simpleStatement() {
+    return  parserExpressionStatement();
 }
 
 std::unique_ptr<Statement> Parser::parseExpressionStatement() {
+    //check diff types of keywords
+    auto expr = simpleStatement();
 
+    //return std::make_unique<ExpressionStatement>(std::move(expr));
+
+}
+
+
+std::unique_ptr<ExpressionStatement> Parser::parserExpressionStatement() {
+    //var expr = new ExpressionStat(expression());
     auto expr = parseExpression();
-
+    if (check(tokenType::SEMI)) {
+        match(tokenType::SEMI);
+    }
     return std::make_unique<ExpressionStatement>(std::move(expr));
-
 }
 std::unique_ptr<Expressions> Parser::parseExpression() {
+    if (check(tokenType::INT)) {
+        auto token = input->nextToken();
 
+
+    }
 }
-
 bool Parser::check(tokenType type) {
     return peek().type == type;
 

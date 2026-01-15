@@ -13,7 +13,7 @@
 
 class ExpressionStatement  : public Statement{
 public:
-    Expressions exp;
+    //Expressions exp;
     explicit ExpressionStatement(std::unique_ptr<Expressions> expr)
         : expression(std::move(expr)) {}
     ~ExpressionStatement() override = default;

@@ -11,6 +11,8 @@
 #include "lexer/lexer.h"
 #include <utility>
 #include <vector>
+
+#include "AST/Statements/ExpressionStatement.h"
 #ifndef COMPILERPRACTICE1_PARSER_H
 #define COMPILERPRACTICE1_PARSER_H
 class Parser {
@@ -34,26 +36,23 @@ private:
 
     //Grammar
     std::unique_ptr<Statement> parseStatement();
-
     std::unique_ptr<Statement> parseExpressionStatement();
-
+    std::unique_ptr<Statement> simpleStatement();
+    std::unique_ptr<ExpressionStatement> parserExpressionStatement();
     std::unique_ptr<Expressions> parseExpression();
-
+    //util functions
+    [[nodiscard]] bool expects() const;
+    void fill(int n);
+    void synchronize(int index);
+    void consume();
+    void match(tokenType type);
+    bool check(tokenType type);
+    //variables
     lexer* input;
     size_t current;
     std::vector<Token> lookahead;
     std::vector<int> positions;
 
 
-    Token previous();
-
-    void fill(int n);
-
-    void synchronize(int index);
-
-    void consume();
-
-    void match(tokenType type);
-    bool check(tokenType type);
 };
 #endif //COMPILERPRACTICE1_PARSER_H

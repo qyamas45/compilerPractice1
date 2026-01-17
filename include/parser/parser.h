@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "AST/Statements/ExpressionStatement.h"
+#include "AST/Statements/Var.h"
 #ifndef COMPILERPRACTICE1_PARSER_H
 #define COMPILERPRACTICE1_PARSER_H
 class Parser {
@@ -36,10 +37,19 @@ private:
 
     //Grammar
     std::unique_ptr<Statement> parseStatement();
-    std::unique_ptr<Statement> parseExpressionStatement();
     std::unique_ptr<Statement> simpleStatement();
+
+    std::unique_ptr<Var> declarationStatement();
+
     std::unique_ptr<ExpressionStatement> parserExpressionStatement();
+
     std::unique_ptr<Expressions> parseExpression();
+    std::unique_ptr<Expressions> orOperatorExpressions();
+    std::unique_ptr<Expressions> andOperatorExpressions();
+    std::unique_ptr<Expressions> notOperatorExpressions();
+    std::unique_ptr<Expressions> equalOperatorExpressions();
+
+    std::unique_ptr<Expressions> atom();
     //util functions
     [[nodiscard]] bool expects() const;
     void fill(int n);

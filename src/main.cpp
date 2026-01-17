@@ -8,7 +8,7 @@ int main()
  
 	std::string test = """"
 						"print \"hello world!\""
-						"var invalid = 3.4"
+						"var test int = 3.4"
 						"x + 3"
 					  """";
 	lexer* lex = new lexer(test);

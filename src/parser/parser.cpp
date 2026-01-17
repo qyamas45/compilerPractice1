@@ -1,18 +1,21 @@
 
 
 #include <memory>
+#include <string>
 #include "parser/parser.h"
 #include "../../include/AST/Statements/Statement.h"
 #include "../../include/AST/Expressions/Expressions.h"
 #include "../../include/AST/Program.h"
 #include "../../include/AST/Statements/ExpressionStatement.h"
-
-
+#include "../../include/AST/Expressions/Name.h"
+#include "../../include/AST/Expressions/BinaryOperator.h"
+#include "../../include/AST/Expressions/IntLiteral.h"
+#include "../../include/AST/Statements/Var.h"
 #include <iostream>
 //util functions
 
 void Parser::fill(int n) {
-    for (int i = 0; i < n; i++) {
+    for (int i = 1; i <= n; ++i) {
         lookahead.push_back(input->nextToken());
     }
 }
@@ -29,6 +32,7 @@ void Parser::consume() {
         lookahead.clear();
     }
    //synchronize
+    synchronize(1);
 }
 
 bool Parser::expects() const {
@@ -44,6 +48,7 @@ Token Parser::peek() {
     return lookahead[current];
 }
 Token Parser::LT(int index) {
+    synchronize(index);
     return this->lookahead.at(pos + index-1);
 }
 tokenType Parser::LA(int index) {
@@ -58,6 +63,7 @@ void Parser::match(tokenType type) {
 }
 //Grammar rules
 std::unique_ptr<Program> Parser::parseProgram() {
+    // Program | Statements
     std::vector<std::unique_ptr<Statement>> statements;
 
     while (!check(tokenType::ENDOFFILE)) {
@@ -68,6 +74,8 @@ std::unique_ptr<Program> Parser::parseProgram() {
 }
 
 std::unique_ptr<Statement> Parser::parseStatement() {
+    //Statements | statement Statements
+    //              epsilon
 
     //check if its while,if,for,def,class,try,return
 
@@ -77,18 +85,18 @@ std::unique_ptr<Statement> Parser::parseStatement() {
 }
 
 std::unique_ptr<Statement> Parser::simpleStatement() {
+    //Statement | Var  |  Import
+    //            Pass |  From
+    if (check(tokenType::VAR)) {
+        return declarationStatement();
+    }
     return  parserExpressionStatement();
 }
 
-std::unique_ptr<Statement> Parser::parseExpressionStatement() {
-    //check diff types of keywords
-    auto expr = simpleStatement();
 
-    //return std::make_unique<ExpressionStatement>(std::move(expr));
+std::unique_ptr<Var> Parser::declarationStatement() {
 
 }
-
-
 std::unique_ptr<ExpressionStatement> Parser::parserExpressionStatement() {
     //var expr = new ExpressionStat(expression());
     auto expr = parseExpression();
@@ -98,11 +106,33 @@ std::unique_ptr<ExpressionStatement> Parser::parserExpressionStatement() {
     return std::make_unique<ExpressionStatement>(std::move(expr));
 }
 std::unique_ptr<Expressions> Parser::parseExpression() {
-    if (check(tokenType::INT)) {
-        auto token = input->nextToken();
+    //logical operators here
+    auto expr = atom();
+    if (check(tokenType::ASSIGN) ){
+        match(tokenType::ASSIGN);
+        auto right = parseExpression();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), "=");
 
 
     }
+    return expr;
+}
+std::unique_ptr<Expressions> Parser::atom() {
+    std::string literal = LT(1).lexeme;
+    // LiteralType | INT, REAL, STRING,
+    //               BOOL, NONE, NAME
+    if (check(tokenType::INDENT)) {
+        std::string name = LT(1).lexeme;
+        match(tokenType::INDENT);
+        return std::unique_ptr<Expressions>(new Name(name));
+    }
+    if (check(tokenType::INT_LITERAL)) {
+        match(tokenType::INT_LITERAL);
+        auto val = std::stoi(literal);
+        return std::unique_ptr<Expressions>(new IntLiteral(val));
+    }
+
+    return nullptr;
 }
 bool Parser::check(tokenType type) {
     return peek().type == type;

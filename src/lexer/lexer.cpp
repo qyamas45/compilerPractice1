@@ -118,7 +118,7 @@ Token lexer::identifier() {
         return Token(tokenType::INDENT, "indent", loc.copy());
     else {
         addSemicolon = true;
-        return Token(tokenType::INDENT, "indent", loc.copy());
+        return Token(tokenType::INDENT, lexeme, loc.copy());
     }
 }
 Token lexer::number() {

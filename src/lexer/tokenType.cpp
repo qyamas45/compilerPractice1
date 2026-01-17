@@ -5,6 +5,7 @@
 
 std::string tokenTypeToString(const tokenType type) {
     switch (type) {
+        case tokenType::ENDOFFILE: return "EndofFile";
         case tokenType::IMPORT: return "Import";
         case tokenType::IN: return "In";
         case tokenType::DEF: return "Def";
@@ -82,7 +83,8 @@ std::string tokenTypeToString(const tokenType type) {
         case tokenType::IS: return "Is";
         case tokenType::NOT: return "Not";
         case tokenType::AT: return "At";
-
+        default:
+        case tokenType::INVALID: return "Invalid";
     }
     return "unknown tokenType";
 }

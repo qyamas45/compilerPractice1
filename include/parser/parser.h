@@ -9,11 +9,13 @@
 #include "../lexer/tokenType.h"
 #include "../AST/Program.h"
 #include "lexer/lexer.h"
+
 #include <utility>
 #include <vector>
 
 #include "AST/Statements/ExpressionStatement.h"
 #include "AST/Statements/Var.h"
+#include "AST/Types/IntType.h"
 #ifndef COMPILERPRACTICE1_PARSER_H
 #define COMPILERPRACTICE1_PARSER_H
 class Parser {
@@ -39,6 +41,8 @@ private:
     std::unique_ptr<Statement> parseStatement();
     std::unique_ptr<Statement> simpleStatement();
 
+
+
     std::unique_ptr<Var> declarationStatement();
 
     std::unique_ptr<ExpressionStatement> parserExpressionStatement();
@@ -49,6 +53,9 @@ private:
     std::unique_ptr<Expressions> notOperatorExpressions();
     std::unique_ptr<Expressions> equalOperatorExpressions();
 
+    std::unique_ptr<Type> type();
+
+    std::unique_ptr<Type> valueType();
     std::unique_ptr<Expressions> atom();
     //util functions
     [[nodiscard]] bool expects() const;

@@ -6,11 +6,8 @@
 #define COMPILERPRACTICE1_INTTYPE_H
 #include "Type.h"
 #include <string>
-
-#endif //COMPILERPRACTICE1_INTTYPE_H
-
 class IntType : public Type {
-    public:
+public:
     static std::string toString() {
         return "int";
     }
@@ -21,3 +18,6 @@ class IntType : public Type {
         return true;
     }
 };
+
+#endif //COMPILERPRACTICE1_INTTYPE_H
+

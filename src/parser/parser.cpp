@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 #include "parser/parser.h"
+#include "../../include/AST/Types/Type.h"
+#include "../../include/AST/Types/IntType.h"
 #include "../../include/AST/Statements/Statement.h"
 #include "../../include/AST/Expressions/Expressions.h"
 #include "../../include/AST/Program.h"
@@ -93,9 +95,29 @@ std::unique_ptr<Statement> Parser::simpleStatement() {
     return  parserExpressionStatement();
 }
 
+std::unique_ptr<Type> Parser::type() {
+    if (check(tokenType::REAL) || check(tokenType::BOOL)
+        || check(tokenType::INT) || check(tokenType::STRING)) {
+        return valueType();
+    }
+    return nullptr;
+}
 
+std::unique_ptr<Type> Parser::valueType() {
+    if (check(tokenType::REAL)) {
+        match(tokenType::REAL);
+    }
+    if (check(tokenType::INT)) {
+        match(tokenType::INT);
+        return std::make_unique<IntType>();
+    }
+    return nullptr;
+}
 std::unique_ptr<Var> Parser::declarationStatement() {
-
+    match(tokenType::VAR);
+    std::string name = LT(1).lexeme;
+    match(tokenType::INDENT);
+    auto typ = type();
 }
 std::unique_ptr<ExpressionStatement> Parser::parserExpressionStatement() {
     //var expr = new ExpressionStat(expression());

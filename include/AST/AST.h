@@ -20,9 +20,11 @@ public:
     int nchildren = 0;
 
     std::vector<std::shared_ptr<AST>> children;
+    //int IntType;
+
     AST(int pLine, int pCharBegin);
     AST(Token t);
-    AST(AST& n);
+    //AST(AST& n);
     std::string toString();
     void tab(std::ostream& os, int amount);
     std::string intToString(int i, int w);

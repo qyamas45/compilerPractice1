@@ -13,6 +13,7 @@
 #include <utility>
 #include <vector>
 
+#include "AST/Statements/Assignment.h"
 #include "AST/Statements/ExpressionStatement.h"
 #include "AST/Statements/Var.h"
 #include "AST/Types/IntType.h"
@@ -53,6 +54,8 @@ private:
     std::unique_ptr<Expressions> notOperatorExpressions();
     std::unique_ptr<Expressions> equalOperatorExpressions();
 
+    std::unique_ptr<Assignment> assignStatement();
+
     std::unique_ptr<Type> type();
 
     std::unique_ptr<Type> valueType();
@@ -62,13 +65,16 @@ private:
     void fill(int n);
     void synchronize(int index);
     void consume();
-    void match(tokenType type);
+
     bool check(tokenType type);
+    bool check(std::initializer_list<tokenType> types);
+    void match(tokenType type);
+    bool match(std::initializer_list<tokenType> types);
     //variables
     lexer* input;
     size_t current;
     std::vector<Token> lookahead;
-    std::vector<int> positions;
+
 
 
 };

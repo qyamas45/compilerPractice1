@@ -7,18 +7,15 @@ int main()
 {
  
 	std::string test = """"
-						"print \"hello world!\""
 						"var test int = 3.4"
-						"x + 3"
 					  """";
 	lexer* lex = new lexer(test);
-
 	Token token{};
-	do {
-		token = lex->nextToken();
+	//do {
+		//token = lex->nextToken();
 
-		std::cout << token.toString() << std::endl;
-	}while (token.type != tokenType::ENDOFFILE);
+		//std::cout << token.toString() << std::endl;
+	//}while (token.type != tokenType::ENDOFFILE);
 	auto* parser = new Parser(lex);
 	parser->parseProgram();
 

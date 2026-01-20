@@ -13,19 +13,24 @@
 #include "../../include/AST/Expressions/BinaryOperator.h"
 #include "../../include/AST/Expressions/IntLiteral.h"
 #include "../../include/AST/Statements/Var.h"
+#include "../../include/AST/Statements/Assignment.h"
 #include <iostream>
 //util functions
 
 void Parser::fill(int n) {
-    for (int i = 1; i <= n; ++i) {
+    for (int i = 0; i < n; ++i) {
         lookahead.push_back(input->nextToken());
     }
+
 }
 void Parser::synchronize(int index) {
-    if (pos + index -1 > lookahead.size()-1) {
-        int n = (pos+index-1) - (lookahead.size()-1);
+
+    if (pos + index > lookahead.size()) {
+        int n = (pos+index) - (lookahead.size());
+        std::cout << n << std::endl;
         fill(n);
     }
+
 }
 void Parser::consume() {
     pos++;
@@ -37,9 +42,7 @@ void Parser::consume() {
     synchronize(1);
 }
 
-bool Parser::expects() const {
-    return !positions.empty();
-}
+
 Token Parser::peek() {
 
     if (current >= lookahead.size()) {
@@ -51,24 +54,22 @@ Token Parser::peek() {
 }
 Token Parser::LT(int index) {
     synchronize(index);
+    //std::cout << this->lookahead[pos + index-1].toString() << std::endl;
+
     return this->lookahead.at(pos + index-1);
 }
 tokenType Parser::LA(int index) {
     return LT(index).type;
 }
 
-void Parser::match(tokenType type) {
 
-    if (LA(1) == type) {
-        consume();
-    }
-}
 //Grammar rules
 std::unique_ptr<Program> Parser::parseProgram() {
     // Program | Statements
     std::vector<std::unique_ptr<Statement>> statements;
 
     while (!check(tokenType::ENDOFFILE)) {
+
         statements.push_back(parseStatement());
     }
     return std::make_unique<Program>(std::move(statements));
@@ -89,10 +90,38 @@ std::unique_ptr<Statement> Parser::parseStatement() {
 std::unique_ptr<Statement> Parser::simpleStatement() {
     //Statement | Var  |  Import
     //            Pass |  From
+    if (LA(1) == tokenType::INDENT &&
+        (LA(2) == tokenType::EQUAL  ||
+        LA(2) == tokenType::MINUS_EQUAL ||
+        LA(2) == tokenType::PLUS_EQUAL  ||
+        LA(2) == tokenType::DIV_EQUAL))
+        {
+
+            return assignStatement();
+        }
+
     if (check(tokenType::VAR)) {
         return declarationStatement();
     }
     return  parserExpressionStatement();
+}
+std::unique_ptr<Assignment> Parser::assignStatement() {
+
+    auto identifier = std::make_unique<Name>(LT(1).lexeme);
+    match(tokenType::INDENT);
+    std::string op = LT(1).lexeme;
+    match({tokenType::EQUAL, tokenType::MINUS_EQUAL,
+        tokenType::PLUS_EQUAL, tokenType::DIV_EQUAL, tokenType::MUL_EQUAL,
+        tokenType::POWER_EQUAL});
+    auto val = parseExpression();
+    if (check(tokenType::SEMI)) {
+        match(tokenType::SEMI);
+    }
+
+    return std::make_unique<Assignment>(std::move(identifier),
+        std::move(val), std::move(op));
+
+
 }
 
 std::unique_ptr<Type> Parser::type() {
@@ -157,7 +186,31 @@ std::unique_ptr<Expressions> Parser::atom() {
     return nullptr;
 }
 bool Parser::check(tokenType type) {
-    return peek().type == type;
 
+    return LA(1) == type;
+
+
+}
+bool Parser::check(std::initializer_list<tokenType> types) {
+    for (tokenType t: types) {
+        if  (check(t))
+            return true;
+    }
+    return false;
+}
+void Parser::match(tokenType type) {
+
+    if (LA(1) == type) {
+        consume();
+    }
+}
+bool Parser::match(std::initializer_list<tokenType> types) {
+    for (tokenType t: types) {
+        if (LA(1) == t ) {
+            consume();
+            return true;
+        }
+    }
+    return false;
 }
 

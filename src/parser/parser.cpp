@@ -27,7 +27,7 @@ void Parser::synchronize(int index) {
 
     if (pos + index > lookahead.size()) {
         int n = (pos+index) - (lookahead.size());
-        std::cout << n << std::endl;
+        //std::cout << n << std::endl;
         fill(n);
     }
 
@@ -59,6 +59,7 @@ Token Parser::LT(int index) {
     return this->lookahead.at(pos + index-1);
 }
 tokenType Parser::LA(int index) {
+    std::cout << tokenTypeToString(LT(index).type) << std::endl;
     return LT(index).type;
 }
 
@@ -95,10 +96,10 @@ std::unique_ptr<Statement> Parser::simpleStatement() {
         LA(2) == tokenType::MINUS_EQUAL ||
         LA(2) == tokenType::PLUS_EQUAL  ||
         LA(2) == tokenType::DIV_EQUAL))
-        {
+    {
 
             return assignStatement();
-        }
+    }
 
     if (check(tokenType::VAR)) {
         return declarationStatement();
@@ -106,6 +107,7 @@ std::unique_ptr<Statement> Parser::simpleStatement() {
     return  parserExpressionStatement();
 }
 std::unique_ptr<Assignment> Parser::assignStatement() {
+
 
     auto identifier = std::make_unique<Name>(LT(1).lexeme);
     match(tokenType::INDENT);
@@ -145,8 +147,17 @@ std::unique_ptr<Type> Parser::valueType() {
 std::unique_ptr<Var> Parser::declarationStatement() {
     match(tokenType::VAR);
     std::string name = LT(1).lexeme;
+
     match(tokenType::INDENT);
     auto typ = type();
+    match(tokenType::ASSIGN);
+    auto expr = parseExpression();
+    if (check(tokenType::SEMI))
+        match(tokenType::SEMI);
+    return std::make_unique<Var>(std::move(expr),
+        std::move(typ),
+        std::move(std::make_unique<Name>(std::move(name))));
+
 }
 std::unique_ptr<ExpressionStatement> Parser::parserExpressionStatement() {
     //var expr = new ExpressionStat(expression());
@@ -163,8 +174,6 @@ std::unique_ptr<Expressions> Parser::parseExpression() {
         match(tokenType::ASSIGN);
         auto right = parseExpression();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), "=");
-
-
     }
     return expr;
 }

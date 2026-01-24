@@ -39,27 +39,41 @@ public:
 private:
 
     //Grammar
+    //Main program
     std::unique_ptr<Statement> parseStatement();
+
+    std::unique_ptr<Statement> compoundStatement();
     std::unique_ptr<Statement> simpleStatement();
 
-
-
     std::unique_ptr<Var> declarationStatement();
-
+    //Expressions
     std::unique_ptr<ExpressionStatement> parserExpressionStatement();
-
     std::unique_ptr<Expressions> parseExpression();
     std::unique_ptr<Expressions> orOperatorExpressions();
     std::unique_ptr<Expressions> andOperatorExpressions();
     std::unique_ptr<Expressions> notOperatorExpressions();
     std::unique_ptr<Expressions> equalOperatorExpressions();
 
+    //Statements
     std::unique_ptr<Assignment> assignStatement();
+    std::unique_ptr<Statement> ifStatement();
+    std::unique_ptr<Statement> whileStatement();
+    std::unique_ptr<Statement> forStatement();
+    std::unique_ptr<Statement> defStatement();
+    std::unique_ptr<Statement> classStatement();
+    std::unique_ptr<Statement> returnStatement();
 
+    std::vector<std::unique_ptr<Statement>> blocks();
+
+    std::vector<std::unique_ptr<Statement>> block();
+
+    //types
     std::unique_ptr<Type> type();
-
     std::unique_ptr<Type> valueType();
     std::unique_ptr<Expressions> atom();
+
+    bool eatIfPresent(tokenType t);
+
     //util functions
     [[nodiscard]] bool expects() const;
     void fill(int n);

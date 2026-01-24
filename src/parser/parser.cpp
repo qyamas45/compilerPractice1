@@ -1,28 +1,38 @@
-
-
 #include <memory>
 #include <string>
 #include "parser/parser.h"
 #include "../../include/AST/Types/Type.h"
 #include "../../include/AST/Types/IntType.h"
+#include "../../include/AST/Types/RealType.h"
 #include "../../include/AST/Statements/Statement.h"
+#include "../../include/AST/Statements/IfStatement.h"
 #include "../../include/AST/Expressions/Expressions.h"
 #include "../../include/AST/Program.h"
 #include "../../include/AST/Statements/ExpressionStatement.h"
 #include "../../include/AST/Expressions/Name.h"
 #include "../../include/AST/Expressions/BinaryOperator.h"
 #include "../../include/AST/Expressions/IntLiteral.h"
+#include "../../include/AST/Expressions/RealLiteral.h"
 #include "../../include/AST/Statements/Var.h"
 #include "../../include/AST/Statements/Assignment.h"
 #include <iostream>
 //util functions
-
+/*
+ *  Function name: fill
+ *  Parameters: int n
+ *  Purpose: Push back lookahead (tokens)
+ */
 void Parser::fill(int n) {
     for (int i = 0; i < n; ++i) {
         lookahead.push_back(input->nextToken());
     }
 
 }
+/*
+ *  Function name: synchronize
+ *  Parameters: int index
+ *  Purpose: synchronize the position of code parsed.
+ */
 void Parser::synchronize(int index) {
 
     if (pos + index > lookahead.size()) {
@@ -32,6 +42,11 @@ void Parser::synchronize(int index) {
     }
 
 }
+/*
+ *  Function name: consume
+ *  Parameters:
+ *  Purpose: Changes posiition of token
+ */
 void Parser::consume() {
     pos++;
     if (pos == lookahead.size()) {
@@ -42,7 +57,12 @@ void Parser::consume() {
     synchronize(1);
 }
 
-
+/*
+ *  Function name: peek
+ *  Parameters:
+ *  Purpose: pushes token to lookahead vector of tokens
+ *  Return: current token
+ */
 Token Parser::peek() {
 
     if (current >= lookahead.size()) {
@@ -59,7 +79,7 @@ Token Parser::LT(int index) {
     return this->lookahead.at(pos + index-1);
 }
 tokenType Parser::LA(int index) {
-    std::cout << tokenTypeToString(LT(index).type) << std::endl;
+    //std::cout << tokenTypeToString(LT(index).type) << std::endl;
     return LT(index).type;
 }
 
@@ -82,12 +102,34 @@ std::unique_ptr<Statement> Parser::parseStatement() {
     //              epsilon
 
     //check if its while,if,for,def,class,try,return
-
+    if (check({tokenType::IF, tokenType::WHILE, tokenType::FOR,
+                    tokenType::DEF, tokenType::CLASS, tokenType::RETURN})) {
+        return compoundStatement();
+    }
 
     //else return expressionStatement
     return simpleStatement();
 }
-
+std::unique_ptr<Statement> Parser::compoundStatement() {
+    if (check(tokenType::IF)) {
+        return ifStatement();
+    }
+    if (check(tokenType::WHILE)) {
+        return whileStatement();
+    }
+    if (check(tokenType::FOR)) {
+        return forStatement();
+    }
+    if (check(tokenType::DEF)) {
+        return defStatement();
+    }
+    if (check(tokenType::CLASS)) {
+        return classStatement();
+    }
+    if (check(tokenType::RETURN)){
+        return returnStatement();
+    }
+}
 std::unique_ptr<Statement> Parser::simpleStatement() {
     //Statement | Var  |  Import
     //            Pass |  From
@@ -108,7 +150,6 @@ std::unique_ptr<Statement> Parser::simpleStatement() {
 }
 std::unique_ptr<Assignment> Parser::assignStatement() {
 
-
     auto identifier = std::make_unique<Name>(LT(1).lexeme);
     match(tokenType::INDENT);
     std::string op = LT(1).lexeme;
@@ -123,9 +164,60 @@ std::unique_ptr<Assignment> Parser::assignStatement() {
     return std::make_unique<Assignment>(std::move(identifier),
         std::move(val), std::move(op));
 
-
 }
 
+std::unique_ptr<Statement> Parser::ifStatement() {
+    match(tokenType::IF);
+    auto ifStatement = std::make_unique<IfStatement>();
+    //ifStatement->condition = std::move(parseExpression());
+    //ifStatement.body.addAll(block());
+    auto statements = block();
+    ifStatement->body.insert(
+      ifStatement->body.end(),
+      std::make_move_iterator(statements.begin()),
+      std::make_move_iterator(statements.end())
+    );
+    //if there is else if
+    if (eatIfPresent(tokenType::ELIF)) {
+        //elif condition
+        //elif block
+        //elif statement
+        //add to else
+    }
+
+    //if there is an else
+    if (eatIfPresent(tokenType::ELSE)) {
+
+    }
+
+}
+std::unique_ptr<Statement> Parser::whileStatement() {
+
+}
+std::unique_ptr<Statement> Parser::forStatement() {
+
+}
+std::unique_ptr<Statement> Parser::defStatement() {
+
+}
+std::unique_ptr<Statement> Parser::classStatement() {
+
+}
+std::unique_ptr<Statement> Parser::returnStatement() {
+
+}
+ std::vector<std::unique_ptr<Statement>> Parser::block() {
+    match(tokenType::CURLYL);
+    std::vector<std::unique_ptr<Statement>> statements;
+    while (check({tokenType::CURLYL, tokenType::ENDOFFILE})) {
+        statements.push_back(parseStatement());
+    }
+    match(tokenType::CURLYR);
+    if (check(tokenType::SEMI)) {
+        match(tokenType::SEMI);
+    }
+    return statements;
+}
 std::unique_ptr<Type> Parser::type() {
     if (check(tokenType::REAL) || check(tokenType::BOOL)
         || check(tokenType::INT) || check(tokenType::STRING)) {
@@ -137,6 +229,7 @@ std::unique_ptr<Type> Parser::type() {
 std::unique_ptr<Type> Parser::valueType() {
     if (check(tokenType::REAL)) {
         match(tokenType::REAL);
+        return std::make_unique<RealType>();
     }
     if (check(tokenType::INT)) {
         match(tokenType::INT);
@@ -191,14 +284,22 @@ std::unique_ptr<Expressions> Parser::atom() {
         auto val = std::stoi(literal);
         return std::unique_ptr<Expressions>(new IntLiteral(val));
     }
-
+    if (check(tokenType::REAL_LITERAL)) {
+        match(tokenType::REAL_LITERAL);
+        auto val = std::stof(literal);
+        return std::unique_ptr<Expressions>(new RealLiteral(val));
+    }
     return nullptr;
 }
+bool Parser::eatIfPresent(tokenType t) {
+    if (LA(1) == t) {
+        consume();
+        return true;
+    }
+    return false;
+}
 bool Parser::check(tokenType type) {
-
     return LA(1) == type;
-
-
 }
 bool Parser::check(std::initializer_list<tokenType> types) {
     for (tokenType t: types) {

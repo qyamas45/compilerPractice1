@@ -19,12 +19,13 @@ class IfStatement : public Statement{
 
     }
     IfStatement(std::unique_ptr<Expressions> expr,
-                std::vector<Statement> thenStatement) {
+                std::vector<std::unique_ptr<Statement>> thenStatement) {
         this->condition = std::move(expr);
+        this->elseStatement = std::move(thenStatement);
     }
     IfStatement(std::unique_ptr<Expressions> expr,
-                std::vector<Statement> thenStatement,
-                std::vector<Statement> elseStatement) {
+                std::vector<std::unique_ptr<Statement>> thenStatement,
+                std::vector<std::unique_ptr<Statement>> elseStatement) {
         this->condition = std::move(expr);
 
 

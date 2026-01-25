@@ -27,6 +27,8 @@ class IfStatement : public Statement{
                 std::vector<std::unique_ptr<Statement>> thenStatement,
                 std::vector<std::unique_ptr<Statement>> elseStatement) {
         this->condition = std::move(expr);
+        this->body = std::move(thenStatement);
+        this->elseStatement = std::move(elseStatement);
 
 
     }

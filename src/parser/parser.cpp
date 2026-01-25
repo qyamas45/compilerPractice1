@@ -169,7 +169,7 @@ std::unique_ptr<Assignment> Parser::assignStatement() {
 std::unique_ptr<Statement> Parser::ifStatement() {
     match(tokenType::IF);
     auto ifStatement = std::make_unique<IfStatement>();
-    ifStatement->condition = std::move(parseExpression());
+    ifStatement->condition = parseExpression();
     //ifStatement.body.addAll(block());
     auto statements = block();
     ifStatement->body.insert(
@@ -187,8 +187,6 @@ std::unique_ptr<Statement> Parser::ifStatement() {
         //add to else
         ifStatement->elseStatement.push_back(std::move(elifStatement));
     }
-
-
     //if there is an else
     if (eatIfPresent(tokenType::ELSE)) {
         auto blockStatement = block();
@@ -204,6 +202,7 @@ std::unique_ptr<Statement> Parser::ifStatement() {
 
 }
 std::unique_ptr<Statement> Parser::whileStatement() {
+    match(tokenType::WHILE);
 
 }
 std::unique_ptr<Statement> Parser::forStatement() {

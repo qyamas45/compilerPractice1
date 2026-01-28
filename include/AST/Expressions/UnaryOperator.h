@@ -1,0 +1,13 @@
+//
+// Created by alyam on 1/28/2026.
+//
+
+#ifndef COMPILERPRACTICE1_UNARYOPERATOR_H
+#define COMPILERPRACTICE1_UNARYOPERATOR_H
+
+
+class UnaryOperator {
+};
+
+
+#endif //COMPILERPRACTICE1_UNARYOPERATOR_H

@@ -1,21 +1,27 @@
 #include <memory>
 #include <string>
 #include "parser/parser.h"
+#include "../../include/AST/Program.h"
 #include "../../include/AST/Types/Type.h"
 #include "../../include/AST/Types/IntType.h"
 #include "../../include/AST/Types/RealType.h"
-#include "../../include/AST/Statements/Statement.h"
-#include "../../include/AST/Statements/IfStatement.h"
-#include "../../include/AST/Expressions/Expressions.h"
-#include "../../include/AST/Program.h"
+#include "../../include/AST/Statements/Assignment.h"
 #include "../../include/AST/Statements/ExpressionStatement.h"
+#include "../../include/AST/Statements/IfStatement.h"
+#include "../../include/AST/Statements/Statement.h"
+#include "../../include/AST/Statements/Var.h"
+#include "../../include/AST/Statements/WhileStatement.h"
+#include "../../include/AST/Expressions/Expressions.h"
 #include "../../include/AST/Expressions/Name.h"
 #include "../../include/AST/Expressions/BinaryOperator.h"
 #include "../../include/AST/Expressions/IntLiteral.h"
 #include "../../include/AST/Expressions/RealLiteral.h"
-#include "../../include/AST/Statements/Var.h"
-#include "../../include/AST/Statements/Assignment.h"
+#include "../../include/AST/Expressions/Group.h"
+
+
 #include <iostream>
+
+#include "AST/Expressions/NotOperator.h"
 //util functions
 /*
  *  Function name: fill
@@ -203,6 +209,16 @@ std::unique_ptr<Statement> Parser::ifStatement() {
 }
 std::unique_ptr<Statement> Parser::whileStatement() {
     match(tokenType::WHILE);
+    auto whileStatement = std::make_unique<WhileStatement>();
+    whileStatement->condition = parseExpression();
+
+    auto statements = block();
+    whileStatement->body.insert(
+    whileStatement->body.end(),
+    std::make_move_iterator(statements.begin()),
+    std::make_move_iterator(statements.end())
+    );
+    return std::make_unique<WhileStatement>(std::move(whileStatement->condition), std::move(statements));
 
 }
 std::unique_ptr<Statement> Parser::forStatement() {
@@ -273,13 +289,133 @@ std::unique_ptr<ExpressionStatement> Parser::parserExpressionStatement() {
 }
 std::unique_ptr<Expressions> Parser::parseExpression() {
     //logical operators here
-    auto expr = atom();
+    auto expr = orExpression();
     if (check(tokenType::ASSIGN) ){
         match(tokenType::ASSIGN);
         auto right = parseExpression();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), "=");
     }
     return expr;
+}
+std::unique_ptr<Expressions> Parser::orExpression() {
+    auto expr = andExpression();
+    //if there is expression | expression
+    if (check(tokenType::OR)) {
+        std::string op = LT(1).lexeme;
+        match(tokenType::OR);
+        auto right = andExpression();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::andExpression() {
+    auto expr = notExpression();
+    //if there is expression & expression
+    if (check(tokenType::AND)) {
+        std::string op = LT(1).lexeme;
+        match(tokenType::AND);
+        auto right = notExpression();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::notExpression() {
+    if (eatIfPresent(tokenType::NOT)) {
+        auto expr = comparison();
+        return std::make_unique<NotOperator>(std::move(expr));
+    }
+    return comparison();
+}
+std::unique_ptr<Expressions>Parser::comparison() {
+    auto expr = atom();
+    while (check({tokenType::EQUAL, tokenType::NOT_EQUAL, tokenType::LT,
+        tokenType::LE, tokenType::GT, tokenType::GE, tokenType::IS
+    }))
+    {
+        std::string op = LT(1).lexeme;
+        if (LA(1) == tokenType::IS && LA(2) == tokenType::NOT) {
+            match(tokenType::IS);
+            op += " " + LT(1).lexeme;
+            match(tokenType::NOT);
+        }
+        else {
+            match({tokenType::EQUAL, tokenType::NOT_EQUAL, tokenType::LT,
+            tokenType::LE, tokenType::GT, tokenType::GE, tokenType::IS});
+        }
+        auto right = atom();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::bitOrExpr() {
+    auto expr = xorExpr();
+    while (check(tokenType::BIT_OR)) {
+        std::string op = LT(1).lexeme;
+        match(tokenType::BIT_OR);
+        auto right = xorExpr();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::xorExpr() {
+    auto expr = bitAndExpr();
+    while (check(tokenType::XOR)) {
+        std::string op = LT(1).lexeme;
+        match(tokenType::XOR);
+        auto right = bitAndExpr();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::bitAndExpr() {
+    auto expr = shiftExpr();
+    while (check(tokenType::BIT_AND)) {
+        std::string op = LT(1).lexeme;
+        match(tokenType::BIT_AND);
+        auto right = shiftExpr();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::shiftExpr() {
+    auto expr = arithExpr();
+    while (check({tokenType::SHIFT_RIGHT, tokenType::SHIFT_LEFT}))
+    {
+        std::string op = LT(1).lexeme;
+        match({tokenType::SHIFT_RIGHT, tokenType::SHIFT_LEFT});
+        auto right = arithExpr();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::arithExpr() {
+    auto expr = term();
+    while (check({tokenType::PLUS_EQUAL, tokenType::MINUS_EQUAL})) {
+        std::string op = LT(1).lexeme;
+        match({tokenType::PLUS_EQUAL, tokenType::MINUS_EQUAL});
+        auto right = term();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::term() {
+    auto expr = factor();
+    while (check({tokenType::DIV, tokenType::MUL, tokenType::MOD})) {
+        std::string op = LT(1).lexeme;
+        match({tokenType::DIV, tokenType::MUL, tokenType::MOD});
+        auto right = factor();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+    }
+    return expr;
+}
+std::unique_ptr<Expressions>Parser::factor() {
+    if (check({tokenType::PLUS, tokenType::MINUS, tokenType::NEG})) {
+        std::string op = LT(1).lexeme;
+        match({tokenType::PLUS, tokenType::MINUS, tokenType::NEG});
+        auto right = factor();
+
+    }
+    return power();
 }
 std::unique_ptr<Expressions> Parser::atom() {
     std::string literal = LT(1).lexeme;
@@ -300,7 +436,10 @@ std::unique_ptr<Expressions> Parser::atom() {
         auto val = std::stof(literal);
         return std::unique_ptr<Expressions>(new RealLiteral(val));
     }
-    return nullptr;
+    match(tokenType::PARENL);
+    auto expr = parseExpression();
+    match(tokenType::PARENR);
+    return std::make_unique<Group>(std::move(expr));
 }
 bool Parser::eatIfPresent(tokenType t) {
     if (LA(1) == t) {

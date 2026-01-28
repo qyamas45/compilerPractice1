@@ -49,10 +49,19 @@ private:
     //Expressions
     std::unique_ptr<ExpressionStatement> parserExpressionStatement();
     std::unique_ptr<Expressions> parseExpression();
-    std::unique_ptr<Expressions> orOperatorExpressions();
-    std::unique_ptr<Expressions> andOperatorExpressions();
-    std::unique_ptr<Expressions> notOperatorExpressions();
-    std::unique_ptr<Expressions> equalOperatorExpressions();
+    std::unique_ptr<Expressions> orExpression();
+    std::unique_ptr<Expressions> andExpression();
+    std::unique_ptr<Expressions> notExpression();
+    std::unique_ptr<Expressions> comparison();
+    std::unique_ptr<Expressions> bitOrExpr();
+    std::unique_ptr<Expressions> xorExpr();
+    std::unique_ptr<Expressions> bitAndExpr();
+    std::unique_ptr<Expressions> shiftExpr();
+    std::unique_ptr<Expressions> arithExpr();
+    std::unique_ptr<Expressions> term();
+
+    std::unique_ptr<Expressions> factor();
+
 
     //Statements
     std::unique_ptr<Assignment> assignStatement();

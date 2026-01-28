@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include "AST/Expressions/NotOperator.h"
+#include "AST/Expressions/UnaryOperator.h"
 //util functions
 /*
  *  Function name: fill
@@ -413,9 +414,22 @@ std::unique_ptr<Expressions>Parser::factor() {
         std::string op = LT(1).lexeme;
         match({tokenType::PLUS, tokenType::MINUS, tokenType::NEG});
         auto right = factor();
+        return std::make_unique<UnaryOperator>(std::move(right), op);
 
     }
     return power();
+}
+std::unique_ptr<Expressions>Parser::power() {
+    auto expr = atom();
+    while (check(tokenType::POWER)) {
+        std::string op = LT(1).lexeme;
+        match({tokenType::POWER});
+        auto right = factor();
+        expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
+
+    }
+    return expr;
+
 }
 std::unique_ptr<Expressions> Parser::atom() {
     std::string literal = LT(1).lexeme;

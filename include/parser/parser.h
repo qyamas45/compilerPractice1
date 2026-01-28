@@ -62,6 +62,8 @@ private:
 
     std::unique_ptr<Expressions> factor();
 
+    std::unique_ptr<Expressions> power();
+
 
     //Statements
     std::unique_ptr<Assignment> assignStatement();

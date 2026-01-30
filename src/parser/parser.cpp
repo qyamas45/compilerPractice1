@@ -21,6 +21,7 @@
 
 #include <iostream>
 
+#include "AST/Expressions/BoolLiteral.h"
 #include "AST/Expressions/NotOperator.h"
 #include "AST/Expressions/UnaryOperator.h"
 //util functions
@@ -449,6 +450,12 @@ std::unique_ptr<Expressions> Parser::atom() {
         match(tokenType::REAL_LITERAL);
         auto val = std::stof(literal);
         return std::unique_ptr<Expressions>(new RealLiteral(val));
+    }
+    if (check({tokenType::TRUE, tokenType::FALSE})) {
+        match({tokenType::TRUE, tokenType::FALSE});
+        const bool val = (literal == "true");
+        return std::unique_ptr<Expressions>(new BoolLiteral(val));
+
     }
     match(tokenType::PARENL);
     auto expr = parseExpression();

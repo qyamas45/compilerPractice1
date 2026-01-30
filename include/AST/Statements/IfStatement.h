@@ -11,9 +11,7 @@
 
 class IfStatement : public Statement{
     public:
-    std::unique_ptr<Expressions> condition;
-    std::vector<std::unique_ptr<Statement>> body;
-    std::vector<std::unique_ptr<Statement>> elseStatement;
+
     IfStatement() {
         this->condition = std::make_unique<Expressions>();
 
@@ -32,6 +30,9 @@ class IfStatement : public Statement{
 
 
     }
+    std::unique_ptr<Expressions> condition;
+    std::vector<std::unique_ptr<Statement>> body;
+    std::vector<std::unique_ptr<Statement>> elseStatement;
 };
 
 

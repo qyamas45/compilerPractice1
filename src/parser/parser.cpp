@@ -8,6 +8,7 @@
 #include "../../include/AST/Statements/Assignment.h"
 #include "../../include/AST/Statements/ExpressionStatement.h"
 #include "../../include/AST/Statements/IfStatement.h"
+#include "../../include/AST/Statements/ForStatement.h"
 #include "../../include/AST/Statements/Statement.h"
 #include "../../include/AST/Statements/Var.h"
 #include "../../include/AST/Statements/WhileStatement.h"
@@ -16,12 +17,15 @@
 #include "../../include/AST/Expressions/BinaryOperator.h"
 #include "../../include/AST/Expressions/IntLiteral.h"
 #include "../../include/AST/Expressions/RealLiteral.h"
+#include "../../include/AST/Expressions/NoneLiteral.h"
+#include "../../include/AST/Expressions/BoolLiteral.h"
 #include "../../include/AST/Expressions/Group.h"
 
 
 #include <iostream>
 
 #include "AST/Expressions/BoolLiteral.h"
+#include "AST/Expressions/NoneLiteral.h"
 #include "AST/Expressions/NotOperator.h"
 #include "AST/Expressions/UnaryOperator.h"
 //util functions
@@ -450,6 +454,11 @@ std::unique_ptr<Expressions> Parser::atom() {
         match(tokenType::REAL_LITERAL);
         auto val = std::stof(literal);
         return std::unique_ptr<Expressions>(new RealLiteral(val));
+    }
+    if (check(tokenType::NONE)) {
+        match(tokenType::NONE);
+        return std::unique_ptr<Expressions>(new NoneLiteral());
+
     }
     if (check({tokenType::TRUE, tokenType::FALSE})) {
         match({tokenType::TRUE, tokenType::FALSE});

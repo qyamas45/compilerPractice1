@@ -21,10 +21,16 @@ public:
         this->value = std::move(exp);
         this->type = std::move(type);
         this->name = std::move(name);
+
+        addChild(std::move(exp));
+        addChild(std::move(name));
+
+
     }
     std::unique_ptr<Expressions> value;
     std::unique_ptr<Type> type;
     std::unique_ptr<Name> name;
+
 };
 
 

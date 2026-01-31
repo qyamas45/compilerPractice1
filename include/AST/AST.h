@@ -24,11 +24,16 @@ public:
 
     AST(int pLine, int pCharBegin);
     AST(Token t);
+
+    AST(AST &n);
+
     //AST(AST& n);
     std::string toString();
     void tab(std::ostream& os, int amount);
     std::string intToString(int i, int w);
     void print(std::ostream& os, int depth);
+
+    virtual void addChild(std::unique_ptr<AST> child);
 
 };
 #endif //COMPILERPRACTICE1_AST_H

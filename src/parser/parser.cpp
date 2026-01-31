@@ -141,6 +141,8 @@ std::unique_ptr<Statement> Parser::compoundStatement() {
     if (check(tokenType::RETURN)){
         return returnStatement();
     }
+
+    return nullptr;
 }
 std::unique_ptr<Statement> Parser::simpleStatement() {
     //Statement | Var  |  Import
@@ -228,7 +230,42 @@ std::unique_ptr<Statement> Parser::whileStatement() {
 
 }
 std::unique_ptr<Statement> Parser::forStatement() {
-
+    //for (var, expression, arithmetic(update)){
+    // body
+    //}
+    //var
+    match(tokenType::FOR);
+    auto forStatement = std::make_unique<ForStatement>();
+    forStatement->condition = parseExpression();
+    if (check(tokenType::VAR)) {
+        match(tokenType::VAR);
+        forStatement->var = declarationStatement();
+    } else if (!check(tokenType::SEMI)) {
+        forStatement->var = declarationStatement();
+    }
+    match(tokenType::SEMI);
+    //condition
+    if (!check(tokenType::SEMI)) {
+        forStatement->condition = parseExpression();
+    }
+    //update
+    match(tokenType::SEMI);
+    if (!check(tokenType::SEMI)) {
+        forStatement->update = parseExpression();
+    }
+    match(tokenType::SEMI);
+    //body
+    auto statements = block();
+    forStatement->body.insert(
+        forStatement->body.end(),
+        std::make_move_iterator(statements.begin()),
+        std::make_move_iterator(statements.end())
+        );
+    return std::make_unique<ForStatement>(
+        std::move(forStatement->condition),
+        std::move(forStatement->var),
+        std::move(forStatement->body),
+        std::move(forStatement->update));
 }
 std::unique_ptr<Statement> Parser::defStatement() {
 

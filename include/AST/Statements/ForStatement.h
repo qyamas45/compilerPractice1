@@ -14,19 +14,31 @@
 class ForStatement : public Statement {
 public:
     ForStatement() {
-        this->condition = std::make_unique<Expressions>();
+        this->condition = nullptr;
+        this->var = nullptr;
+        this->update = nullptr;
+
     }
     ForStatement(std::unique_ptr<Expressions> condition,
                 std::unique_ptr<Var>var,
-                std::vector<std::unique_ptr<Statement>>statement) {
+                std::vector<std::unique_ptr<Statement>>statement,
+                std::unique_ptr<Expressions> update) {
         this->condition = std::move(condition);
         this->var = std::move(var);
         this->body = std::move(statement);
+
+        Statement::addChild(std::move(condition));
+        Statement::addChild(std::move(var));
+
+        for (auto& stmt:statement) {
+            Statement::addChild(std::move(stmt));
+        }
 
     }
     std::unique_ptr<Expressions>condition;
     std::unique_ptr<Var>var;
     std::vector<std::unique_ptr<Statement>> body;
+    std::unique_ptr<Expressions> update;
 };
 
 

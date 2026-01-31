@@ -18,7 +18,8 @@ public:
         this->identifier = std::move(ident);
         this->expression = std::move(expres);
         this->op = std::move(oper);
-
+        addChild(std::move(expres));
+        addChild(std::move(ident));
     }
 
     std::unique_ptr<Expressions> identifier;

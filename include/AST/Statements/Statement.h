@@ -6,12 +6,13 @@
 #ifndef COMPILERPRACTICE1_STATEMENT_H
 #define COMPILERPRACTICE1_STATEMENT_H
 #include "../AST.h"
+#include "AST/Expressions/Name.h"
 
 class Statement : public AST {
 public:
     virtual ~Statement() = default;
 
-    void addChild(const std::unique_ptr<Expressions> exp);
+
 
     Statement() = default;
     Statement(Token t);

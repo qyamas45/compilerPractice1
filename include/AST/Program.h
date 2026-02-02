@@ -15,7 +15,18 @@ class Program :public AST {
 public:
     std::vector<std::unique_ptr<Statement>> statements;
 
-    explicit Program(std::vector<std::unique_ptr<Statement>> statements) : statements(std::move(statements)) {}
+    Program(std::vector<std::unique_ptr<Statement>> statements) {
+        std::cout << "Program created" << std::endl;
+        std::cout << "In program class: " << statements.size() << std::endl;
+       for (auto& stmt : statements) {
+           addChild(std::move(stmt));
+       }
+    }
+    std::string toString() const override{
+        return "Program";
+    }
+
+
 };
 
 

@@ -105,6 +105,7 @@ std::unique_ptr<Program> Parser::parseProgram() {
 
         statements.push_back(parseStatement());
     }
+    std::cout << "called in  parser: " << statements.size() << std::endl;
     return std::make_unique<Program>(std::move(statements));
 
 }

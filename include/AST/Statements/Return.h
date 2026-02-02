@@ -13,13 +13,11 @@ public:
         expr = nullptr;
     }
 
-
-
     Return (std::unique_ptr<Expressions>exp) {
         this->expr = std::move(exp);
         // when expression isn't null
         if (this->expr!=nullptr)
-            addChild(std::move(exp));
+            Statement::addChild(std::move(exp));
     }
 
     std::unique_ptr<Expressions> expr;

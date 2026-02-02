@@ -16,6 +16,7 @@ public:
         std::string operation) {
         this->operation = operation;
         this->expr = std::move(expr);
+        AST::addChild(std::move(expr));
     }
     std::unique_ptr<Expressions> expr;
     std::string operation;

@@ -10,16 +10,14 @@
 
 class Assignment : public Statement{
 public:
-
-
     Assignment(std::unique_ptr<Expressions>ident,
                std::unique_ptr<Expressions> expres,
                std::string oper) {
         this->identifier = std::move(ident);
         this->expression = std::move(expres);
         this->op = std::move(oper);
-        addChild(std::move(expres));
-        addChild(std::move(ident));
+        Statement::addChild(std::move(expres));
+        Statement::addChild(std::move(ident));
     }
 
     std::unique_ptr<Expressions> identifier;

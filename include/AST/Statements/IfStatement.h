@@ -27,6 +27,13 @@ class IfStatement : public Statement{
         this->condition = std::move(expr);
         this->body = std::move(thenStatement);
         this->elseStatement = std::move(elseStatement);
+        addChild(std::move(expr));
+        for (auto& stmt:thenStatement) {
+            Statement::addChild(std::move(stmt));
+        }
+        for (auto& stmt:elseStatement) {
+            Statement::addChild(std::move(stmt));
+        }
 
 
     }

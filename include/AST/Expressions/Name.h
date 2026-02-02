@@ -12,7 +12,7 @@ class Name : public Expressions{
 public:
 
     explicit Name(const std::string &identifier): identifier(identifier){}
-    std::string toString();
+    std::string toString() const override;
     static bool isName();
     static bool asName();
 

@@ -4,7 +4,7 @@
 
 #include "../../../include/AST/Expressions/Name.h"
 
-std::string Name::toString() {
+std::string Name::toString() const {
     return identifier;
 }
 bool Name::isName() {

@@ -17,8 +17,8 @@ int main()
 		//std::cout << token.toString() << std::endl;
 	//}while (token.type != tokenType::ENDOFFILE);
 	auto* parser = new Parser(lex);
-	parser->parseProgram();
-
+	//parser->parseProgram();
+	parser->parseProgram()->print(std::cout, 0);
 	std::cout << "Hello world" << std::endl;
     return 0;
 }

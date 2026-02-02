@@ -19,9 +19,9 @@ public:
     }
 
     // Getters
-    Type getType() const { return nodeType; }
-    const std::string& getObjectClassName() const { return objectClassName; }
-    const std::vector<std::shared_ptr<Node>>& getChildren() const {
+    [[nodiscard]] const Type& getType()const { return nodeType; }
+    [[nodiscard]] const std::string& getObjectClassName() const { return objectClassName; }
+    [[nodiscard]] const std::vector<std::shared_ptr<Node>>& getChildren() const {
         return children;
     }
 

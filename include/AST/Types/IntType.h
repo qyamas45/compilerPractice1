@@ -8,7 +8,7 @@
 #include <string>
 class IntType : public Type {
 public:
-    static std::string toString() {
+    std::string toString() {
         return "int";
     }
     IntType* asIntType() {

@@ -9,7 +9,7 @@
 
 class RealType : public Type {
 public:
-    static std::string toString() {
+    std::string toString() {
         return "real";
     }
     RealType* asRealType() {

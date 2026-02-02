@@ -7,9 +7,9 @@
 #include "lexer/token.h"
 #include <memory>
 #include <vector>
-
+#include <cassert>
 #include <string>
-
+#include <iostream>
 
 class AST {
 public:
@@ -28,10 +28,10 @@ public:
     AST(AST &n);
 
     //AST(AST& n);
-    std::string toString();
+    [[nodiscard]] virtual std::string toString() const;
     void tab(std::ostream& os, int amount);
     std::string intToString(int i, int w);
-    void print(std::ostream& os, int depth);
+    void print(std::ostream& os, int depth) const;
 
     virtual void addChild(std::unique_ptr<AST> child);
 

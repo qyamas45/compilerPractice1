@@ -14,7 +14,7 @@ public:
         return instance;
     }
 
-    static std::string toString()  {
+    std::string toString()  {
         return "None";
     }
     NoneLiteral()= default;

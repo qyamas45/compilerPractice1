@@ -22,10 +22,11 @@ public:
         this->type = std::move(type);
         this->name = std::move(name);
 
-        addChild(std::move(exp));
-        addChild(std::move(name));
+        Statement::addChild(std::move(name));
+        Statement::addChild(std::move(type));
 
-
+        if (exp != nullptr)
+            Statement::addChild(std::move(exp));
     }
     std::unique_ptr<Expressions> value;
     std::unique_ptr<Type> type;

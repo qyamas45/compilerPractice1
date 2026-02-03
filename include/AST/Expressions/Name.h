@@ -17,6 +17,9 @@ public:
     static bool asName();
 
     std::string identifier;
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
+    }
 
 };
 

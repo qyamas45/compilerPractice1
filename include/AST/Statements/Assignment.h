@@ -19,7 +19,9 @@ public:
         Statement::addChild(std::move(expres));
         Statement::addChild(std::move(ident));
     }
-
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
+    }
     std::unique_ptr<Expressions> identifier;
     std::unique_ptr<Expressions> expression;
     std::string op;

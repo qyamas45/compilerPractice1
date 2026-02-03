@@ -13,6 +13,7 @@ public:
     Group(std::unique_ptr<Expressions> expr) {
         this->expr = std::move(expr);
     }
+    void accept(ASTVisitor& visitor) override;
 };
 
 

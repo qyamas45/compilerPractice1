@@ -17,7 +17,6 @@ public:
         this->condition = nullptr;
         this->var = nullptr;
         this->update = nullptr;
-
     }
     ForStatement(std::unique_ptr<Expressions> condition,
                 std::unique_ptr<Var>var,
@@ -34,6 +33,9 @@ public:
             Statement::addChild(std::move(stmt));
         }
 
+    }
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
     }
     std::unique_ptr<Expressions>condition;
     std::unique_ptr<Var>var;

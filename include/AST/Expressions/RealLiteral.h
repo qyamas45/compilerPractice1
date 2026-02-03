@@ -9,8 +9,12 @@
 
 class RealLiteral : public Literal {
 public:
-    float value;
+
     explicit RealLiteral(float val) : value(val) {};
+    float value;
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
+    }
 };
 
 

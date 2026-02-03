@@ -11,10 +11,10 @@
 
 class IfStatement : public Statement{
     public:
-
     IfStatement() {
-        this->condition = std::make_unique<Expressions>();
-
+        this->condition = nullptr;
+        this->body = std::vector<std::unique_ptr<Statement>>();
+        this->elseStatement = std::vector<std::unique_ptr<Statement>>();
     }
     IfStatement(std::unique_ptr<Expressions> expr,
                 std::vector<std::unique_ptr<Statement>> thenStatement) {
@@ -34,8 +34,9 @@ class IfStatement : public Statement{
         for (auto& stmt:elseStatement) {
             Statement::addChild(std::move(stmt));
         }
-
-
+    }
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
     }
     std::unique_ptr<Expressions> condition;
     std::vector<std::unique_ptr<Statement>> body;

@@ -18,6 +18,7 @@ public:
         this->expr = std::move(expr);
         AST::addChild(std::move(expr));
     }
+    void accept(ASTVisitor& visitor) override;
     std::unique_ptr<Expressions> expr;
     std::string operation;
 };

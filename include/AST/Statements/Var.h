@@ -28,6 +28,9 @@ public:
         if (exp != nullptr)
             Statement::addChild(std::move(exp));
     }
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
+    }
     std::unique_ptr<Expressions> value;
     std::unique_ptr<Type> type;
     std::unique_ptr<Name> name;

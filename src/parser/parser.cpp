@@ -105,7 +105,7 @@ std::unique_ptr<Program> Parser::parseProgram() {
 
         statements.push_back(parseStatement());
     }
-    std::cout << "called in  parser: " << statements.size() << std::endl;
+    //std::cout << "called in  parser: " << statements.size() << std::endl;
     return std::make_unique<Program>(std::move(statements));
 
 }
@@ -481,21 +481,21 @@ std::unique_ptr<Expressions> Parser::atom() {
     if (check(tokenType::INDENT)) {
         std::string name = LT(1).lexeme;
         match(tokenType::INDENT);
-        return std::unique_ptr<Expressions>(new Name(name));
+        return std::unique_ptr<Expressions>{std::make_unique<Name>(std::move(name))};
     }
     if (check(tokenType::INT_LITERAL)) {
         match(tokenType::INT_LITERAL);
         auto val = std::stoi(literal);
-        return std::unique_ptr<Expressions>(new IntLiteral(val));
+        return std::unique_ptr<Expressions>{std::make_unique<IntLiteral>(val)};
     }
     if (check(tokenType::REAL_LITERAL)) {
         match(tokenType::REAL_LITERAL);
         auto val = std::stof(literal);
-        return std::unique_ptr<Expressions>(new RealLiteral(val));
+        return std::unique_ptr<Expressions>{std::make_unique<RealLiteral>(val)};
     }
     if (check(tokenType::NONE)) {
         match(tokenType::NONE);
-        return std::unique_ptr<Expressions>(new NoneLiteral());
+        return std::unique_ptr<Expressions>{std::make_unique<NoneLiteral>()};
 
     }
     if (check({tokenType::TRUE, tokenType::FALSE})) {

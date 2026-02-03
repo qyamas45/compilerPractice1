@@ -19,7 +19,11 @@ public:
         addChild(std::move(expr));
     }
     ~ExpressionStatement() override = default;
+
     std::unique_ptr<Expressions> expression;
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
+    }
 };
 
 

@@ -8,10 +8,14 @@
 
 
 class IntLiteral : public Literal {
-    public:
-    int value;
+public:
 
-    explicit IntLiteral(const int value): value(value) {};
+
+    IntLiteral(const int value): value(value) {};
+    int value;
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
+    }
 };
 
 

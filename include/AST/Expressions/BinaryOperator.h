@@ -22,6 +22,9 @@ public:
         AST::addChild(std::move(left));
         AST::addChild(std::move(right));
     }
+    void accept(ASTVisitor& visitor) override {
+        visitor.visit(*this);
+    }
 private:
     std::unique_ptr<Expressions> left;
     std::unique_ptr<Expressions> right;

@@ -8,11 +8,12 @@
 #include "../AST.h"
 
 class Type : public AST{
-	public:
-		virtual ~Type() {};
-		virtual bool isIntType(){};
-		virtual bool isFloatType(){};
-		virtual bool isStringType(){};
+public:
+	virtual ~Type() {};
+	virtual bool isIntType(){};
+	virtual bool isFloatType(){};
+	virtual bool isStringType(){};
+	void accept(ASTVisitor& visitor) override;
 	//function types
 
 };

@@ -4,8 +4,3 @@
 
 #include "../../../include/AST/Statements/Statement.h"
 
-Statement::Statement(Token t) : AST() {
-}
-
-Statement::Statement(AST t) : AST() {
-}

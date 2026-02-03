@@ -2,7 +2,7 @@
 #include "../include/lexer/lexer.h"
 #include "../include/lexer/token.h"
 #include "../include/parser/parser.h"
-
+#include "../include/AST/PrintVisitor.h"
 int main()
 {
  
@@ -18,7 +18,9 @@ int main()
 	//}while (token.type != tokenType::ENDOFFILE);
 	auto* parser = new Parser(lex);
 	//parser->parseProgram();
-	parser->parseProgram()->print(std::cout, 0);
+	PrintVisitor printer;
+	auto ast = parser->parseProgram();
+	ast->accept(printer);
 	std::cout << "Hello world" << std::endl;
     return 0;
 }

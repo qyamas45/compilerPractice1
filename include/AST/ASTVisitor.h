@@ -14,6 +14,7 @@ public:
     virtual void visit(class Name&) = 0;
     virtual void visit(class Expressions&) = 0;
     virtual void visit(class IfStatement&) = 0;
+    virtual void visit(class Assignment&) = 0;
 
 
 };

@@ -11,10 +11,13 @@
 #include <string>
 #include <iostream>
 
+#include "ASTVisitor.h"
+
 class AST {
 public:
     AST() = default;
     virtual ~AST() = default;
+    virtual void accept(ASTVisitor& v)= 0;
     int line{};
     int charBegin{};
     int nchildren = 0;

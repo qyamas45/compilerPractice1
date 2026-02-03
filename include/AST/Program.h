@@ -16,12 +16,13 @@ public:
     std::vector<std::unique_ptr<Statement>> statements;
 
     Program(std::vector<std::unique_ptr<Statement>> statements) {
-        std::cout << "Program created" << std::endl;
-        std::cout << "In program class: " << statements.size() << std::endl;
+        //std::cout << "Program created" << std::endl;
+        //std::cout << "In program class: " << statements.size() << std::endl;
        for (auto& stmt : statements) {
            addChild(std::move(stmt));
        }
     }
+    void accept(ASTVisitor& v){ v.visit(*this); }
     std::string toString() const override{
         return "Program";
     }

@@ -10,8 +10,8 @@
 class Node {
 public:
     // Constructor
-    explicit Node(Type type, std::string objectClassName = "")
-        : nodeType(type), objectClassName(std::move(objectClassName)) {}
+    explicit Node(std::unique_ptr<Type> type, std::string objectClassName = "")
+        : nodeType(std::move(type)), objectClassName(std::move(objectClassName)) {}
 
     // Add child node
     void addChild(std::shared_ptr<Node> child) {
@@ -19,14 +19,14 @@ public:
     }
 
     // Getters
-    [[nodiscard]] const Type& getType()const { return nodeType; }
+    [[nodiscard]] const Type& getType()const { return *nodeType; }
     [[nodiscard]] const std::string& getObjectClassName() const { return objectClassName; }
     [[nodiscard]] const std::vector<std::shared_ptr<Node>>& getChildren() const {
         return children;
     }
 
 private:
-    Type nodeType;
+    std::unique_ptr<Type> nodeType;
     std::string objectClassName;
     std::vector<std::shared_ptr<Node>> children;
 };

@@ -12,3 +12,13 @@ void PrintVisitor::visit(Program &program) {
         child->accept(*this);
     }
 }
+void PrintVisitor::visit(Statement&) {}
+void PrintVisitor::visit(Assignment&) {}
+void PrintVisitor::visit(Name&) {}
+void PrintVisitor::visit(Expressions&) {}
+void PrintVisitor::visit(IfStatement&) {}
+void PrintVisitor::visit(Type&) {}
+void PrintVisitor::visit(NoneLiteral&){}
+void PrintVisitor::visit(Group&){}
+void PrintVisitor::visit(NotOperator&){}
+void PrintVisitor::visit(UnaryOperator&){}

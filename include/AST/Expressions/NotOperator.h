@@ -13,7 +13,9 @@ public:
     NotOperator(std::unique_ptr<Expressions> expr) {
         this->expression = std::move(expr);
     }
-    void accept(ASTVisitor& visitor) override;
+    void accept(ASTVisitor& v) override {
+        v.visit(*this);
+    }
 };
 
 

@@ -4,7 +4,17 @@
 
 #ifndef COMPILERPRACTICE1_ASTVISITOR_H
 #define COMPILERPRACTICE1_ASTVISITOR_H
-
+class Program;
+class Statement;
+class Expressions;
+class IfStatement;
+class Assignment;
+class Type;
+class NoneLiteral;
+class Group;
+class NotOperator;
+class UnaryOperator;
+class Name;
 
 class ASTVisitor {
 public:
@@ -15,6 +25,11 @@ public:
     virtual void visit(class Expressions&) = 0;
     virtual void visit(class IfStatement&) = 0;
     virtual void visit(class Assignment&) = 0;
+    virtual void visit(class Type&) = 0;
+    virtual void visit(class NoneLiteral&) = 0;
+    virtual void visit(class Group&) = 0;
+    virtual void visit(class NotOperator&)=0;
+    virtual void visit(class UnaryOperator&) = 0;
 
 
 };

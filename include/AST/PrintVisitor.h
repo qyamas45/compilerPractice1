@@ -19,6 +19,11 @@ public:
     void visit(Name& name) override;
     void visit(Expressions& expressions) override;
     void visit(IfStatement& ifStatement) override;
+    void visit(Type& Type) override;
+    void visit(NoneLiteral&) override;
+    void visit(Group&) override;
+    void visit(NotOperator&) override;
+    void visit(UnaryOperator&) override;
 };
 
 

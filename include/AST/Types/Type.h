@@ -10,10 +10,14 @@
 class Type : public AST{
 public:
 	virtual ~Type() {};
-	virtual bool isIntType(){};
-	virtual bool isFloatType(){};
-	virtual bool isStringType(){};
-	void accept(ASTVisitor& visitor) override;
+	virtual bool isIntType() const = 0;
+	virtual bool isFloatType() const = 0;
+	virtual bool isStringType() const = 0;
+	void accept(ASTVisitor& v) override {
+		v.visit(*this);
+	}
+
+
 	//function types
 
 };

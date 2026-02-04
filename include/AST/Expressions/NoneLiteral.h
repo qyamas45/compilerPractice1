@@ -17,7 +17,10 @@ public:
     std::string toString()  {
         return "None";
     }
-    void accept(ASTVisitor& visitor) override;
+
+    void accept(ASTVisitor& v) override {
+        v.visit(*this);
+    }
     NoneLiteral()= default;
     NoneLiteral(const NoneLiteral&) = delete;
     NoneLiteral& operator=(const NoneLiteral&) = delete;

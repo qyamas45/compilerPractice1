@@ -9,7 +9,7 @@
 
 class RealType : public Type {
 public:
-    std::string toString() {
+    std::string toString()const override {
         return "real";
     }
     RealType* asRealType() {
@@ -17,6 +17,18 @@ public:
     }
     bool isRealType() {
         return true;
+    }
+    bool isIntType() const override{
+        return false;
+    }
+    bool isFloatType() const override {
+        return true;
+    }
+    bool isStringType() const override {
+        return false;
+    }
+    void accept(ASTVisitor& v) override {
+        v.visit(*this);
     }
 };
 

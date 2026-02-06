@@ -309,6 +309,7 @@ std::unique_ptr<Type> Parser::valueType() {
     return nullptr;
 }
 std::unique_ptr<Var> Parser::declarationStatement() {
+
     match(tokenType::VAR);
     std::string name = LT(1).lexeme;
 

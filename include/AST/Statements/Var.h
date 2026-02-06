@@ -27,6 +27,7 @@ public:
 
         if (exp != nullptr)
             Statement::addChild(std::move(exp));
+
     }
     void accept(ASTVisitor &v) override {
         v.visit(*this);

@@ -23,6 +23,10 @@ public:
         children.push_back(std::move(child));
         nchildren++;
     }
+    void accept(ASTVisitor &v) override {
+        std::cout << "FUCK";
+        v.visit(*this);
+    }
 };
 
 #endif //COMPILERPRACTICE1_STATEMENT_H

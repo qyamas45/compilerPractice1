@@ -11,6 +11,8 @@
 #include "Expressions/Name.h"
 #include "Statements/IfStatement.h"
 #include "Expressions/Expressions.h"
+#include "Statements/Var.h"
+
 class PrintVisitor : public ASTVisitor{
 public:
     void visit(Program& program) override;
@@ -24,6 +26,7 @@ public:
     void visit(Group&) override;
     void visit(NotOperator&) override;
     void visit(UnaryOperator&) override;
+    void visit(Var&) override;
 };
 
 

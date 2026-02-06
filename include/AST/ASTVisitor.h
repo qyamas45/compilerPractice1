@@ -15,6 +15,7 @@ class Group;
 class NotOperator;
 class UnaryOperator;
 class Name;
+class Var;
 
 class ASTVisitor {
 public:
@@ -30,7 +31,7 @@ public:
     virtual void visit(class Group&) = 0;
     virtual void visit(class NotOperator&)=0;
     virtual void visit(class UnaryOperator&) = 0;
-
+    virtual void visit(class Var&) = 0;
 
 };
 

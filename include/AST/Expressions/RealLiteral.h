@@ -10,7 +10,7 @@
 class RealLiteral : public Literal {
 public:
 
-    explicit RealLiteral(float val) : value(val) {};
+    RealLiteral(const float val) : value(val) {};
     float value;
     void accept(ASTVisitor &v) override {
         v.visit(*this);

@@ -11,11 +11,15 @@ class IfStatement;
 class Assignment;
 class Type;
 class NoneLiteral;
+class IntLiteral;
+class RealLiteral;
+
 class Group;
 class NotOperator;
 class UnaryOperator;
 class Name;
 class Var;
+class StringLiteral;
 
 class ASTVisitor {
 public:
@@ -28,6 +32,9 @@ public:
     virtual void visit(class Assignment&) = 0;
     virtual void visit(class Type&) = 0;
     virtual void visit(class NoneLiteral&) = 0;
+    virtual void visit(class IntLiteral&) = 0;
+    virtual void visit(class RealLiteral&) = 0;
+    virtual void visit(class StringLiteral&) = 0;
     virtual void visit(class Group&) = 0;
     virtual void visit(class NotOperator&)=0;
     virtual void visit(class UnaryOperator&) = 0;

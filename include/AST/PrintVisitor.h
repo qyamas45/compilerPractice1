@@ -5,13 +5,8 @@
 #ifndef COMPILERPRACTICE1_PRINTVISITOR_H
 #define COMPILERPRACTICE1_PRINTVISITOR_H
 #include "ASTVisitor.h"
-#include <iostream>
 
-#include "Statements/Assignment.h"
-#include "Expressions/Name.h"
-#include "Statements/IfStatement.h"
-#include "Expressions/Expressions.h"
-#include "Statements/Var.h"
+
 
 class PrintVisitor : public ASTVisitor{
 public:
@@ -23,6 +18,10 @@ public:
     void visit(IfStatement& ifStatement) override;
     void visit(Type& Type) override;
     void visit(NoneLiteral&) override;
+    void visit(IntLiteral& l) override;
+    void visit(StringLiteral& s) override;
+    void visit(RealLiteral& r)override;
+
     void visit(Group&) override;
     void visit(NotOperator&) override;
     void visit(UnaryOperator&) override;

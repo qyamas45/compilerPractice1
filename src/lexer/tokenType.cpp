@@ -37,6 +37,7 @@ std::string tokenTypeToString(const tokenType type) {
         case tokenType::REAL_LITERAL: return "Realliteral";
         case tokenType::FLOAT_LITERAL: return "Floatliteral";
         case tokenType::STRING_LITERAL: return "Stringliteral";
+        case tokenType::NONE_LITERAL: return "NoneLiteral";
         case tokenType::COMMENT: return "Comment";
         case tokenType::PLUS: return "Plus";
         case tokenType::MINUS: return "Minus";

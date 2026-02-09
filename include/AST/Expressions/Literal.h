@@ -7,6 +7,9 @@
 
 #include "Expressions.h"
 class Literal : public Expressions {
+public:
+    ~Literal() override =default;
+
 };
 
 

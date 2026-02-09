@@ -48,12 +48,14 @@ Token lexer::comment() {
 Token lexer::identifier() {
     std::string lexeme;
     loc.step();
-    while (isAlpha()) {
+
+    while (isAlpha() && ch != '\n') {
         lexeme += ch;
         consume();
     }
     loc.columns(lexeme.length());
     addSemicolon = false;
+
     if (lexeme == "import")
         return Token(tokenType::IMPORT, "import", loc.copy());
     else if (lexeme == "from")
@@ -98,12 +100,15 @@ Token lexer::identifier() {
         addSemicolon = true;
         return Token(tokenType::RETURN, "return", loc.copy());
     }
+
     else if (lexeme == "class")
         return Token(tokenType::CLASS, "class", loc.copy());
     else if (lexeme == "var")
         return Token(tokenType::VAR, "var", loc.copy());
     else if (lexeme == "int")
         return Token(tokenType::INT, "int", loc.copy());
+    else if (lexeme == "None")
+        return Token(tokenType::NONE_LITERAL, "None", loc.copy());
     else if (lexeme == "real")
         return Token(tokenType::REAL, "real", loc.copy());
     else if (lexeme == "bool")
@@ -169,6 +174,7 @@ Token lexer::nextToken() {
     }
 
     while (true) {
+
         switch (ch) {
             case ' ':
             case '\t':

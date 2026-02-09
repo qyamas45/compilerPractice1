@@ -4,6 +4,7 @@
 
 #ifndef COMPILERPRACTICE1_VAR_H
 #define COMPILERPRACTICE1_VAR_H
+#include <iostream>
 #include "Statement.h"
 #include "../Expressions/Name.h"
 #include "../Types/Type.h"
@@ -25,9 +26,10 @@ public:
         Statement::addChild(std::move(name));
         Statement::addChild(std::move(type));
 
-        if (exp != nullptr)
-            Statement::addChild(std::move(exp));
+        if (exp != nullptr) {
 
+            Statement::addChild(std::move(exp));
+        }
     }
     void accept(ASTVisitor &v) override {
         v.visit(*this);

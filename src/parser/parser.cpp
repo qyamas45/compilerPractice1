@@ -27,7 +27,10 @@
 #include "AST/Expressions/BoolLiteral.h"
 #include "AST/Expressions/NoneLiteral.h"
 #include "AST/Expressions/NotOperator.h"
+#include "AST/Expressions/StringLiteral.h"
 #include "AST/Expressions/UnaryOperator.h"
+#include "AST/Types/NoneType.h"
+#include "AST/Types/StringType.h"
 //util functions
 /*
  *  Function name: fill
@@ -291,7 +294,8 @@ std::unique_ptr<Statement> Parser::returnStatement() {
 }
 std::unique_ptr<Type> Parser::type() {
     if (check(tokenType::REAL) || check(tokenType::BOOL)
-        || check(tokenType::INT) || check(tokenType::STRING)) {
+        || check(tokenType::INT) || check(tokenType::STRING) || check(tokenType::NONE)) {
+
         return valueType();
     }
     return nullptr;
@@ -300,11 +304,21 @@ std::unique_ptr<Type> Parser::type() {
 std::unique_ptr<Type> Parser::valueType() {
     if (check(tokenType::REAL)) {
         match(tokenType::REAL);
+
         return std::make_unique<RealType>();
     }
     if (check(tokenType::INT)) {
         match(tokenType::INT);
         return std::make_unique<IntType>();
+    }
+    if (check(tokenType::STRING)) {
+        match(tokenType::STRING);
+
+        return std::make_unique<StringType>();
+    }
+    if (check(tokenType::NONE)) {
+        match(tokenType::NONE);
+        return std::make_unique<NoneType>();
     }
     return nullptr;
 }
@@ -316,9 +330,12 @@ std::unique_ptr<Var> Parser::declarationStatement() {
     match(tokenType::INDENT);
     auto typ = type();
     match(tokenType::ASSIGN);
-    auto expr = parseExpression();
+    std::unique_ptr<Expressions> expr = parseExpression();
+
+    //if var int x;
     if (check(tokenType::SEMI))
         match(tokenType::SEMI);
+
     return std::make_unique<Var>(std::move(expr),
         std::move(typ),
         std::move(std::make_unique<Name>(std::move(name))));
@@ -476,28 +493,33 @@ std::unique_ptr<Expressions>Parser::power() {
 
 }
 std::unique_ptr<Expressions> Parser::atom() {
+
     std::string literal = LT(1).lexeme;
     // LiteralType | INT, REAL, STRING,
     //               BOOL, NONE, NAME
+
     if (check(tokenType::INDENT)) {
         std::string name = LT(1).lexeme;
         match(tokenType::INDENT);
-        return std::unique_ptr<Expressions>{std::make_unique<Name>(std::move(name))};
+        return std::make_unique<Name>(std::move(name));
     }
     if (check(tokenType::INT_LITERAL)) {
         match(tokenType::INT_LITERAL);
         auto val = std::stoi(literal);
-        return std::unique_ptr<Expressions>{std::make_unique<IntLiteral>(val)};
+        return std::make_unique<IntLiteral>(val);
     }
     if (check(tokenType::REAL_LITERAL)) {
         match(tokenType::REAL_LITERAL);
         auto val = std::stof(literal);
-        return std::unique_ptr<Expressions>{std::make_unique<RealLiteral>(val)};
+        return std::make_unique<RealLiteral>(val);
     }
-    if (check(tokenType::NONE)) {
-        match(tokenType::NONE);
-        return std::unique_ptr<Expressions>{std::make_unique<NoneLiteral>()};
-
+    if (check(tokenType::STRING_LITERAL)) {
+        match(tokenType::STRING_LITERAL);
+        return std::make_unique<StringLiteral>(literal);
+    }
+    if (check(tokenType::NONE_LITERAL)) {
+        match(tokenType::NONE_LITERAL);
+        return std::make_unique<NoneLiteral>();
     }
     if (check({tokenType::TRUE, tokenType::FALSE})) {
         match({tokenType::TRUE, tokenType::FALSE});

@@ -45,6 +45,7 @@ enum class tokenType {
         REAL_LITERAL,
         FLOAT_LITERAL,
         STRING_LITERAL,
+        NONE_LITERAL,
         COMMENT,
 
         //MATH OPERATIONS

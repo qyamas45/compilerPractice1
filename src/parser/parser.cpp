@@ -5,6 +5,7 @@
 #include "../../include/AST/Types/Type.h"
 #include "../../include/AST/Types/IntType.h"
 #include "../../include/AST/Types/RealType.h"
+
 #include "../../include/AST/Statements/Assignment.h"
 #include "../../include/AST/Statements/ExpressionStatement.h"
 #include "../../include/AST/Statements/IfStatement.h"
@@ -32,6 +33,7 @@
 #include "AST/Types/BoolType.h"
 #include "AST/Types/NoneType.h"
 #include "AST/Types/StringType.h"
+
 //util functions
 /*
  *  Function name: fill
@@ -526,10 +528,13 @@ std::unique_ptr<Expressions> Parser::atom() {
         match(tokenType::NONE_LITERAL);
         return std::make_unique<NoneLiteral>();
     }
+
     if (check({tokenType::TRUE, tokenType::FALSE})) {
         match({tokenType::TRUE, tokenType::FALSE});
+
         const bool val = (literal == "true");
-        return std::unique_ptr<Expressions>(new BoolLiteral(val));
+
+        return std::make_unique<BoolLiteral>(val);
 
     }
     match(tokenType::PARENL);

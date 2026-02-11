@@ -21,11 +21,11 @@ public:
     void visit(IntLiteral& l) override;
     void visit(StringLiteral& s) override;
     void visit(RealLiteral& r)override;
-
+    void visit(BoolLiteral& l) override;
     void visit(Group&) override;
     void visit(NotOperator&) override;
     void visit(UnaryOperator&) override;
-    void visit(Var&) override;
+    void visit(Var& var) override;
 };
 
 

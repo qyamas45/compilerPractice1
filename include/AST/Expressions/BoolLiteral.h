@@ -10,7 +10,7 @@
 class BoolLiteral : public Literal{
 public:
 
-    explicit BoolLiteral(bool value) : value(value) {};
+    BoolLiteral(bool value) : value(value) {};
     bool value;
     void accept(ASTVisitor &v) override {
         v.visit(*this);

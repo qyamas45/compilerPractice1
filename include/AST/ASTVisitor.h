@@ -1,7 +1,6 @@
 //
 // Created by alyam on 2/2/2026.
 //
-
 #ifndef COMPILERPRACTICE1_ASTVISITOR_H
 #define COMPILERPRACTICE1_ASTVISITOR_H
 class Program;
@@ -19,7 +18,7 @@ class UnaryOperator;
 class Name;
 class Var;
 class StringLiteral;
-
+class BoolLiteral;
 class ASTVisitor {
 public:
     virtual ~ASTVisitor() = default;
@@ -34,6 +33,7 @@ public:
     virtual void visit(class IntLiteral&) = 0;
     virtual void visit(class RealLiteral&) = 0;
     virtual void visit(class StringLiteral&) = 0;
+    virtual void visit(class BoolLiteral&) = 0;
     virtual void visit(class Group&) = 0;
     virtual void visit(class NotOperator&)=0;
     virtual void visit(class UnaryOperator&) = 0;

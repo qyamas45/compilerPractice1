@@ -3,12 +3,12 @@
 //
 
 #include "../../include/AST/PrintVisitor.h"
-
 #include "../../include/AST/Program.h"
-#include "../../include/AST/Expressions/IntLiteral.h"
 #include "../../include/AST/Statements/Var.h"
-#include "../../include/AST/Expressions/RealLiteral.h"
 #include "../../include/AST/Expressions/StringLiteral.h"
+#include "../../include/AST/Expressions/BoolLiteral.h"
+#include "../../include/AST/Expressions/IntLiteral.h"
+#include "../../include/AST/Expressions/RealLiteral.h"
 
 void PrintVisitor::visit(Program &program) {
     std::cout << "Program Started!" << std::endl;
@@ -62,6 +62,10 @@ void PrintVisitor::visit(StringLiteral& s) {
 }
 void PrintVisitor::visit(NoneLiteral&) {
     std::cout << "Visited NoneLiteral!" << std::endl << std::endl;
+}
+void PrintVisitor::visit(BoolLiteral& l) {
+    std::cout << "Visited BoolLiteral!" << std::endl;
+    std::cout << "Value: " << l.value << std::endl << std::endl;
 }
 void PrintVisitor::visit(Var& var) {
     std::cout << "Visited Var!" << std::endl;

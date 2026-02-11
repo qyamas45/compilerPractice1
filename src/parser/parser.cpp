@@ -29,6 +29,7 @@
 #include "AST/Expressions/NotOperator.h"
 #include "AST/Expressions/StringLiteral.h"
 #include "AST/Expressions/UnaryOperator.h"
+#include "AST/Types/BoolType.h"
 #include "AST/Types/NoneType.h"
 #include "AST/Types/StringType.h"
 //util functions
@@ -319,6 +320,10 @@ std::unique_ptr<Type> Parser::valueType() {
     if (check(tokenType::NONE)) {
         match(tokenType::NONE);
         return std::make_unique<NoneType>();
+    }
+    if (check(tokenType::BOOL)) {
+        match(tokenType::BOOL);
+        return std::make_unique<BoolType>();
     }
     return nullptr;
 }

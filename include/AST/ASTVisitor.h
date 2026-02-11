@@ -13,7 +13,6 @@ class Type;
 class NoneLiteral;
 class IntLiteral;
 class RealLiteral;
-
 class Group;
 class NotOperator;
 class UnaryOperator;

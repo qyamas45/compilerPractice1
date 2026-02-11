@@ -10,7 +10,8 @@ int main()
 						"var test1 real = 3.5\n"
 						"var test2 int = 2\n"
 						"var test3 none = None\n"
-						"var test4 string = \"test\"\n";
+						"var test4 string = \"test\"\n"
+						"var test5 bool = True\n";
 
 	lexer* lex = new lexer(test);
 	Token token{};

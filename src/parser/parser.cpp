@@ -169,7 +169,6 @@ std::unique_ptr<Statement> Parser::simpleStatement() {
         return declarationStatement();
     }
     if (check(tokenType::PRINT)) {
-        std::cout << "TEST";
         return printStatement();
     }
     return  parserExpressionStatement();
@@ -558,8 +557,8 @@ std::unique_ptr<Expressions> Parser::atom() {
     match(tokenType::PARENR);
     return std::make_unique<Group>(std::move(expr));
 }
-bool Parser::eatIfPresent(tokenType t) {
-    if (LA(1) == t) {
+bool Parser::eatIfPresent(tokenType t1) {
+    if (LA(1) == t1) {
         consume();
         return true;
     }

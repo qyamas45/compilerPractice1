@@ -45,6 +45,8 @@ private:
     std::unique_ptr<Statement> compoundStatement();
     std::unique_ptr<Statement> simpleStatement();
 
+    std::unique_ptr<Statement> printStatement();
+
     std::unique_ptr<Var> declarationStatement();
     //Expressions
     std::unique_ptr<ExpressionStatement> parserExpressionStatement();

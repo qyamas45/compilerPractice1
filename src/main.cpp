@@ -12,7 +12,8 @@ int main()
 						"var test3 none = None\n"
 						"var test4 string = \"test\"\n"
 						"var test5 bool = false\n"
-						"var test6 bool = true";
+						"var test6 bool = true\n"
+						"print \"test\"";
 
 	lexer* lex = new lexer(test);
 	Token token{};

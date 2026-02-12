@@ -24,7 +24,6 @@ public:
         nchildren++;
     }
     void accept(ASTVisitor &v) override {
-        std::cout << "FUCK";
         v.visit(*this);
     }
 };

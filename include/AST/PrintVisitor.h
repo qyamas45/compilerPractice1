@@ -16,6 +16,7 @@ public:
     void visit(Name& name) override;
     void visit(Expressions& expressions) override;
     void visit(IfStatement& ifStatement) override;
+    void visit(Print& print) override;
     void visit(Type& Type) override;
     void visit(NoneLiteral&) override;
     void visit(IntLiteral& l) override;

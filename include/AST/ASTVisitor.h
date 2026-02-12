@@ -19,6 +19,7 @@ class Name;
 class Var;
 class StringLiteral;
 class BoolLiteral;
+class Print;
 class ASTVisitor {
 public:
     virtual ~ASTVisitor() = default;
@@ -27,6 +28,7 @@ public:
     virtual void visit(class Name&) = 0;
     virtual void visit(class Expressions&) = 0;
     virtual void visit(class IfStatement&) = 0;
+    virtual void visit(class Print&) = 0;
     virtual void visit(class Assignment&) = 0;
     virtual void visit(class Type&) = 0;
     virtual void visit(class NoneLiteral&) = 0;

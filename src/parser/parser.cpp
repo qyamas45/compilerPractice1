@@ -30,6 +30,7 @@
 #include "AST/Expressions/NotOperator.h"
 #include "AST/Expressions/StringLiteral.h"
 #include "AST/Expressions/UnaryOperator.h"
+#include "AST/Statements/Print.h"
 #include "AST/Types/BoolType.h"
 #include "AST/Types/NoneType.h"
 #include "AST/Types/StringType.h"
@@ -167,8 +168,23 @@ std::unique_ptr<Statement> Parser::simpleStatement() {
     if (check(tokenType::VAR)) {
         return declarationStatement();
     }
+    if (check(tokenType::PRINT)) {
+        std::cout << "TEST";
+        return printStatement();
+    }
     return  parserExpressionStatement();
 }
+std::unique_ptr<Statement> Parser::printStatement() {
+    match(tokenType::PRINT);
+
+    auto val = parseExpression();
+    if (check(tokenType::SEMI)) {
+        match(tokenType::SEMI);
+    }
+
+    return std::make_unique<Print>(std::move(val));
+}
+
 std::unique_ptr<Assignment> Parser::assignStatement() {
 
     auto identifier = std::make_unique<Name>(LT(1).lexeme);

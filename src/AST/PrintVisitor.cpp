@@ -9,6 +9,7 @@
 #include "../../include/AST/Expressions/BoolLiteral.h"
 #include "../../include/AST/Expressions/IntLiteral.h"
 #include "../../include/AST/Expressions/RealLiteral.h"
+#include "../../include/AST/Statements/Print.h"
 
 void PrintVisitor::visit(Program &program) {
     std::cout << "Program Started!" << std::endl;
@@ -66,6 +67,11 @@ void PrintVisitor::visit(NoneLiteral&) {
 void PrintVisitor::visit(BoolLiteral& l) {
     std::cout << "Visited BoolLiteral!" << std::endl;
     std::cout << "Value: " << l.value << std::endl << std::endl;
+}
+void PrintVisitor::visit(Print& print) {
+    std::cout << "Visited Print!" << std::endl;
+    //visit the value that is being printed
+    print.expressions->accept(*this);
 }
 void PrintVisitor::visit(Var& var) {
     std::cout << "Visited Var!" << std::endl;

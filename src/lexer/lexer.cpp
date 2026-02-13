@@ -22,6 +22,10 @@ bool lexer::isLetter() const {
 bool lexer::isAlpha() const {
     return isLetter() || isDigit() || ch == '_';
 }
+bool lexer::isHexDigit() const {
+    return std::isxdigit(ch) || isLetter();
+}
+
 Token lexer::string() {
     std::string lexeme;
     loc.step();
@@ -129,6 +133,23 @@ Token lexer::identifier() {
 Token lexer::number() {
     std::string lexeme;
     //grab the first number and continue
+
+    if (ch == '0') {
+        lexeme += ch;
+        consume();
+        if (ch == 'x' || ch == 'X') {
+            lexeme += ch;
+            consume();
+            while (isHexDigit()) {
+                lexeme += ch;
+                consume();
+            }
+            int val = std::stoi(lexeme, nullptr, 16);
+            std::string intStringVal = std::to_string(val);
+            loc.columns(lexeme.length());
+            return Token(tokenType::INT_LITERAL, intStringVal, loc.copy());
+        }
+    }
     lexeme += ch;
     consume();
     //if there is still continue number, consume

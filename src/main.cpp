@@ -8,6 +8,8 @@ int main()
  
 	std::string test =
 						"var test1 real = 3.5\n"
+						"var test0 int = 0x1\n"
+						"var test10 int = 0x22\n"
 						"var test2 int = 2\n"
 						"var test3 none = None\n"
 						"var test4 string = \"test\"\n"

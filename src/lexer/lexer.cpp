@@ -147,7 +147,7 @@ Token lexer::number() {
             int val = std::stoi(lexeme, nullptr, 16);
             std::string intStringVal = std::to_string(val);
             loc.columns(lexeme.length());
-            return Token(tokenType::INT_LITERAL, intStringVal, loc.copy());
+            return {tokenType::INT_LITERAL, intStringVal, loc.copy()};
         }
     }
     lexeme += ch;

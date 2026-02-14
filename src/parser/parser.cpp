@@ -208,11 +208,14 @@ std::unique_ptr<Statement> Parser::ifStatement() {
     ifStatement->condition = parseExpression();
     //ifStatement.body.addAll(block());
     auto statements = block();
+
     ifStatement->body.insert(
       ifStatement->body.end(),
       std::make_move_iterator(statements.begin()),
       std::make_move_iterator(statements.end())
     );
+
+
     //if there is else if
     if (eatIfPresent(tokenType::ELIF)) {
         //elif condition
@@ -225,13 +228,16 @@ std::unique_ptr<Statement> Parser::ifStatement() {
     }
     //if there is an else
     if (eatIfPresent(tokenType::ELSE)) {
+
         auto blockStatement = block();
+
         ifStatement->elseStatement.insert(
           ifStatement->elseStatement.end(),
           std::make_move_iterator(blockStatement.begin()),
           std::make_move_iterator(blockStatement.end())
         );
     }
+
     return std::make_unique<IfStatement>(std::move(ifStatement->condition),
         std::move(ifStatement->body),
         std::move(ifStatement->elseStatement));
@@ -301,13 +307,17 @@ std::unique_ptr<Statement> Parser::returnStatement() {
  std::vector<std::unique_ptr<Statement>> Parser::block() {
     match(tokenType::CURLYL);
     std::vector<std::unique_ptr<Statement>> statements;
-    while (check({tokenType::CURLYL, tokenType::ENDOFFILE})) {
+    //{ ... }
+    while (!check({tokenType::CURLYR, tokenType::ENDOFFILE})) {
         statements.push_back(parseStatement());
+
     }
+
     match(tokenType::CURLYR);
     if (check(tokenType::SEMI)) {
         match(tokenType::SEMI);
     }
+
     return statements;
 }
 std::unique_ptr<Type> Parser::type() {
@@ -517,6 +527,7 @@ std::unique_ptr<Expressions>Parser::power() {
 std::unique_ptr<Expressions> Parser::atom() {
 
     std::string literal = LT(1).lexeme;
+    //std::cout << literal << std::endl;
     // LiteralType | INT, REAL, STRING,
     //               BOOL, NONE, NAME
 

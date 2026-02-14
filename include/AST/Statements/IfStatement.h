@@ -24,14 +24,16 @@ class IfStatement : public Statement{
     IfStatement(std::unique_ptr<Expressions> expr,
                 std::vector<std::unique_ptr<Statement>> thenStatement,
                 std::vector<std::unique_ptr<Statement>> elseStatement) {
+        std::cout << "in Else: " << elseStatement.size() << std::endl;
         this->condition = std::move(expr);
         this->body = std::move(thenStatement);
         this->elseStatement = std::move(elseStatement);
-        addChild(std::move(expr));
+        Statement::addChild(std::move(expr));
         for (auto& stmt:thenStatement) {
             Statement::addChild(std::move(stmt));
         }
         for (auto& stmt:elseStatement) {
+
             Statement::addChild(std::move(stmt));
         }
     }

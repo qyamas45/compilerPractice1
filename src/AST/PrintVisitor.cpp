@@ -10,6 +10,8 @@
 #include "../../include/AST/Expressions/IntLiteral.h"
 #include "../../include/AST/Expressions/RealLiteral.h"
 #include "../../include/AST/Statements/Print.h"
+#include "AST/Expressions/Group.h"
+#include "AST/Statements/IfStatement.h"
 
 void PrintVisitor::visit(Program &program) {
     std::cout << "Program Started!" << std::endl;
@@ -33,15 +35,28 @@ void PrintVisitor::visit(Name&) {
 void PrintVisitor::visit(Expressions&) {
     std::cout << "Visited Expressions!" << std::endl;
 }
-void PrintVisitor::visit(IfStatement&) {
+void PrintVisitor::visit(IfStatement& ifStatement) {
     std::cout << "Visited IfStatement!" << std::endl;
+
+
+    if (ifStatement.condition != nullptr)
+        ifStatement.condition->accept(*this);
+
+    for (auto& child: ifStatement.body)
+        child->accept(*this);
+
+    for (auto& child: ifStatement.elseStatement)
+        child->accept(*this);
+
 }
 void PrintVisitor::visit(Type& Type) {
     std::cout << "Visited Type!" << std::endl;
 }
 
-void PrintVisitor::visit(Group&) {
+void PrintVisitor::visit(Group& g) {
     std::cout << "Visited Group!" << std::endl;
+    if (g.expr != nullptr)
+        g.expr->accept(*this);
 }
 void PrintVisitor::visit(NotOperator&) {
     std::cout << "Visited NotOperator!" << std::endl;

@@ -1,0 +1,13 @@
+//
+// Created by alyam on 2/15/2026.
+//
+
+#ifndef COMPILERPRACTICE1_DOWHILESTATEMENT_H
+#define COMPILERPRACTICE1_DOWHILESTATEMENT_H
+
+
+class DoWhileStatement {
+};
+
+
+#endif //COMPILERPRACTICE1_DOWHILESTATEMENT_H

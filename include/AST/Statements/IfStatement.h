@@ -24,7 +24,7 @@ class IfStatement : public Statement{
     IfStatement(std::unique_ptr<Expressions> expr,
                 std::vector<std::unique_ptr<Statement>> thenStatement,
                 std::vector<std::unique_ptr<Statement>> elseStatement) {
-        std::cout << "in Else: " << elseStatement.size() << std::endl;
+        
         this->condition = std::move(expr);
         this->body = std::move(thenStatement);
         this->elseStatement = std::move(elseStatement);

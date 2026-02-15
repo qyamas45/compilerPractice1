@@ -17,7 +17,9 @@ int main()
 						"var test6 bool = true\n"
 						"print \"test\"\n"
 						"if (true){}\n"
-						"if (false){ var test10 int = 2 }";
+						"if (false) { var test10 int = 2 }\n"
+						"if (true) {} else {var test11 int = 3 }\n"
+						"if (true) {} elif (true) {var test13 int = 2 } else {var test14 int = 4 }";
 
 	lexer* lex = new lexer(test);
 	Token token{};

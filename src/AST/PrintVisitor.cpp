@@ -38,13 +38,16 @@ void PrintVisitor::visit(Expressions&) {
 void PrintVisitor::visit(IfStatement& ifStatement) {
     std::cout << "Visited IfStatement!" << std::endl;
 
-
+    //if (...)
     if (ifStatement.condition != nullptr)
         ifStatement.condition->accept(*this);
-
+    // if () {
+    //      ...
+    // }
     for (auto& child: ifStatement.body)
         child->accept(*this);
-
+    //
+    //
     for (auto& child: ifStatement.elseStatement)
         child->accept(*this);
 

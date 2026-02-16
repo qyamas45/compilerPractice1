@@ -1,0 +1,13 @@
+//
+// Created by alyam on 2/15/2026.
+//
+
+#ifndef COMPILERPRACTICE1_RETURNTYPE_H
+#define COMPILERPRACTICE1_RETURNTYPE_H
+
+
+class ReturnType {
+};
+
+
+#endif //COMPILERPRACTICE1_RETURNTYPE_H

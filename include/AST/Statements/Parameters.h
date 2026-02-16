@@ -1,0 +1,13 @@
+//
+// Created by alyam on 2/15/2026.
+//
+
+#ifndef COMPILERPRACTICE1_PARAMETERS_H
+#define COMPILERPRACTICE1_PARAMETERS_H
+
+
+class Parameters {
+};
+
+
+#endif //COMPILERPRACTICE1_PARAMETERS_H

@@ -19,7 +19,9 @@ public:
         if (this->expr!=nullptr)
             Statement::addChild(std::move(exp));
     }
-
+    void accept(ASTVisitor &v) override {
+        v.visit(*this);
+    }
     std::unique_ptr<Expressions> expr;
 };
 

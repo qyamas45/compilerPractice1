@@ -11,6 +11,8 @@
 #include "../../include/AST/Statements/IfStatement.h"
 #include "../../include/AST/Statements/ForStatement.h"
 #include "../../include/AST/Statements/Statement.h"
+#include "../../include/AST/Statements/Return.h"
+#include "../../include/AST/Statements/Function.h"
 #include "../../include/AST/Statements/Var.h"
 #include "../../include/AST/Statements/WhileStatement.h"
 #include "../../include/AST/Expressions/Expressions.h"
@@ -296,15 +298,71 @@ std::unique_ptr<Statement> Parser::forStatement() {
         std::move(forStatement->update));
 }
 std::unique_ptr<Statement> Parser::defStatement() {
+    //def name(...) type { ... }
+    //def
+    match(tokenType::DEF);
+    //match(tokenType::INDENT);
+    // name (
+    std::unique_ptr<Name> name = std::make_unique<Name>(LT(1).lexeme);
+    match(tokenType::INDENT);
+    match(tokenType::PARENL);
+    // ( ... )
 
+    std::vector<std::unique_ptr<Parameter>> params = ParameterList();
+    match(tokenType::PARENR);
+
+    std::unique_ptr<Type> returnType = type();
+    std::vector<std::unique_ptr<Statement>> body = block();
+
+    return std::make_unique<Function>(std::move(name), std::move(params),
+        std::move(returnType), std::move(body));
 }
+
 std::unique_ptr<Statement> Parser::classStatement() {
-
+    return nullptr;
 }
+
 std::unique_ptr<Statement> Parser::returnStatement() {
-
+    match(tokenType::RETURN);
+    std::unique_ptr<Expressions> expr = nullptr;
+    if (!check(tokenType::SEMI) && !check(tokenType::CURLYR)) {
+         expr = parseExpression();
+    }
+    if (check(tokenType::SEMI)) {
+        match(tokenType::SEMI);
+    }
+    return std::make_unique<Return>(std::move(expr));
 }
- std::vector<std::unique_ptr<Statement>> Parser::block() {
+
+std::vector<std::unique_ptr<Parameter>> Parser::ParameterList() {
+    std::vector<std::unique_ptr<Parameter>> params;
+    if (!check(tokenType::PARENR)) {
+        while (check(tokenType::INDENT)) {
+            std::string name = LT(1).lexeme;
+            match(tokenType::INDENT); // Parameter name
+            // Type might be optional or required? Based on example `p1 int`, it looks like `name type`.
+            // Let's assume type is required for now as per `var` declaration which enables type.
+            // Wait, `var` decl is `var name type = expr`.
+            // Here parameters are likely `name type`.
+            
+            std::unique_ptr<Type> paramType = type();
+
+            auto param = std::make_unique<Parameter>();
+
+            param->name = std::make_unique<Name>(std::move(name));
+            param->type = std::move(paramType);
+            
+            params.push_back(std::move(param));
+            if (check(tokenType::COMMA))
+                consume();
+            else
+                break;
+        }
+
+    }
+    return params;
+}
+std::vector<std::unique_ptr<Statement>> Parser::block() {
     match(tokenType::CURLYL);
     std::vector<std::unique_ptr<Statement>> statements;
     //{ ... }

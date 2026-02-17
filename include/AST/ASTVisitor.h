@@ -20,10 +20,16 @@ class Var;
 class StringLiteral;
 class BoolLiteral;
 class Print;
+class Parameter;
+class Function;
+class Return;
 class ASTVisitor {
 public:
     virtual ~ASTVisitor() = default;
     virtual void visit(class Program&) = 0;
+    virtual void visit(class Function&) = 0;
+    virtual void visit(class Parameter&) = 0;
+    virtual void visit(class Return&) = 0;
     virtual void visit(class Statement&) = 0;
     virtual void visit(class Name&) = 0;
     virtual void visit(class Expressions&) = 0;

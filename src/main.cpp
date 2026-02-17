@@ -20,8 +20,14 @@ int main()
 						"if (false) { var test10 int = 2 }\n"
 						"if (true) {} else {var test11 int = 3 }\n"
 						"if (true) {} elif (true) {var test13 int = 2 } else {var test14 int = 4 }";
+	std::string test2 =
+						"def myFunction(p1 int, p2 real) int {\n"
+						"   var x int = 0\n"
+						"   return x\n"
+						"}\n"
+                        "print \"parsed function\"";
 
-	lexer* lex = new lexer(test);
+	lexer* lex = new lexer(test2);
 	Token token{};
 	//do {
 	//	token = lex->nextToken();

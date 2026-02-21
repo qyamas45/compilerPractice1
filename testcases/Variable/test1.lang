@@ -1,0 +1,7 @@
+var myInt int = 42
+var myReal real = 3.14
+var myString string = "Test String"
+var myBool bool = true
+var myNone none = None
+
+print "Variables parsing passed"

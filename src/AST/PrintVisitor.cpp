@@ -37,6 +37,9 @@ void PrintVisitor::visit(Return& returnStatement) {
 }
 void PrintVisitor::visit(Parameter& parameter) {
     std::cout << "Visited Parameter!" << std::endl;
+    parameter.name->accept(*this);
+    parameter.type->accept(*this);
+
 }
 void PrintVisitor::visit(Statement& statement) {
     std::cout << "Visited Statement!" << std::endl;
@@ -75,6 +78,7 @@ void PrintVisitor::visit(IfStatement& ifStatement) {
 }
 void PrintVisitor::visit(Type& Type) {
     std::cout << "Visited Type!" << std::endl;
+    std::cout << "Type: " << Type.toString() << std::endl;
 }
 
 void PrintVisitor::visit(Group& g) {

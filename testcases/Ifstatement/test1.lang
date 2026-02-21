@@ -1,0 +1,9 @@
+var condition bool = true
+if (condition) {
+    print "True branch"
+} elif (false) {
+    print "Elif branch"
+} else {
+    print "False branch"
+}
+print "If combinations parsed"

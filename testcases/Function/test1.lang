@@ -1,0 +1,5 @@
+def add(x int, y int) int {
+    var result int = x + y
+    return result
+}
+print "Function parsing passed"

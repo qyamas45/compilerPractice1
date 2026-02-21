@@ -24,6 +24,9 @@ public:
     bool isStringType() const override {
         return false;
     }
+    bool isNoneType() const override {
+        return true;
+    }
     void accept(ASTVisitor& v) override {
         v.visit(*this);
     }

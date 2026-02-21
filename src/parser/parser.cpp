@@ -161,7 +161,10 @@ std::unique_ptr<Statement> Parser::simpleStatement() {
         (LA(2) == tokenType::EQUAL  ||
         LA(2) == tokenType::MINUS_EQUAL ||
         LA(2) == tokenType::PLUS_EQUAL  ||
-        LA(2) == tokenType::DIV_EQUAL))
+        LA(2) == tokenType::DIV_EQUAL ||
+        LA(2) == tokenType::POWER_EQUAL ||
+        LA(2) == tokenType::MOD_EQUAL ||
+        LA(2) == tokenType::MUL_EQUAL))
     {
 
             return assignStatement();
@@ -193,7 +196,7 @@ std::unique_ptr<Assignment> Parser::assignStatement() {
     std::string op = LT(1).lexeme;
     match({tokenType::EQUAL, tokenType::MINUS_EQUAL,
         tokenType::PLUS_EQUAL, tokenType::DIV_EQUAL, tokenType::MUL_EQUAL,
-        tokenType::POWER_EQUAL});
+        tokenType::POWER_EQUAL, tokenType::MOD_EQUAL});
     auto val = parseExpression();
     if (check(tokenType::SEMI)) {
         match(tokenType::SEMI);
@@ -441,9 +444,11 @@ std::unique_ptr<ExpressionStatement> Parser::parserExpressionStatement() {
 }
 std::unique_ptr<Expressions> Parser::parseExpression() {
     //logical operators here
+
     auto expr = orExpression();
     if (check(tokenType::ASSIGN) ){
         match(tokenType::ASSIGN);
+
         auto right = parseExpression();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), "=");
     }
@@ -479,7 +484,7 @@ std::unique_ptr<Expressions>Parser::notExpression() {
     return comparison();
 }
 std::unique_ptr<Expressions>Parser::comparison() {
-    auto expr = atom();
+    auto expr = bitAndExpr();
     while (check({tokenType::EQUAL, tokenType::NOT_EQUAL, tokenType::LT,
         tokenType::LE, tokenType::GT, tokenType::GE, tokenType::IS
     }))
@@ -541,10 +546,13 @@ std::unique_ptr<Expressions>Parser::shiftExpr() {
     return expr;
 }
 std::unique_ptr<Expressions>Parser::arithExpr() {
+
     auto expr = term();
-    while (check({tokenType::PLUS_EQUAL, tokenType::MINUS_EQUAL})) {
+    while (check({tokenType::PLUS, tokenType::MINUS})) {
+
         std::string op = LT(1).lexeme;
-        match({tokenType::PLUS_EQUAL, tokenType::MINUS_EQUAL});
+
+        match({tokenType::PLUS, tokenType::MINUS});
         auto right = term();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
     }

@@ -17,7 +17,7 @@ $(TARGET): $(OBJS)
 	$(CXX) $(OBJS) -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
-	@if not exist "$(dir $@)" mkdir "$(dir $@)"
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:

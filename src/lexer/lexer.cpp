@@ -125,6 +125,8 @@ Token lexer::identifier() {
         return Token(tokenType::FLOAT, "float", loc.copy());
     else if (lexeme == "indent")
         return Token(tokenType::INDENT, "indent", loc.copy());
+    else if (lexeme == "not")
+        return Token(tokenType::NOT, "not", loc.copy());
     else {
         addSemicolon = true;
         return Token(tokenType::INDENT, lexeme, loc.copy());

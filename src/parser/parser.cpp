@@ -456,10 +456,12 @@ std::unique_ptr<Expressions> Parser::parseExpression() {
 }
 std::unique_ptr<Expressions> Parser::orExpression() {
     auto expr = andExpression();
+
     //if there is expression | expression
-    if (check(tokenType::OR)) {
+    if (check(tokenType::BIT_OR)) {
+
         std::string op = LT(1).lexeme;
-        match(tokenType::OR);
+        match(tokenType::BIT_OR);
         auto right = andExpression();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
     }
@@ -467,10 +469,12 @@ std::unique_ptr<Expressions> Parser::orExpression() {
 }
 std::unique_ptr<Expressions>Parser::andExpression() {
     auto expr = notExpression();
+
     //if there is expression & expression
-    if (check(tokenType::AND)) {
+    if (check(tokenType::BIT_AND)) {
+
         std::string op = LT(1).lexeme;
-        match(tokenType::AND);
+        match(tokenType::BIT_AND);
         auto right = notExpression();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
     }
@@ -484,7 +488,7 @@ std::unique_ptr<Expressions>Parser::notExpression() {
     return comparison();
 }
 std::unique_ptr<Expressions>Parser::comparison() {
-    auto expr = bitAndExpr();
+    auto expr = bitOrExpr();
     while (check({tokenType::EQUAL, tokenType::NOT_EQUAL, tokenType::LT,
         tokenType::LE, tokenType::GT, tokenType::GE, tokenType::IS
     }))
@@ -506,7 +510,7 @@ std::unique_ptr<Expressions>Parser::comparison() {
 }
 std::unique_ptr<Expressions>Parser::bitOrExpr() {
     auto expr = xorExpr();
-    while (check(tokenType::BIT_OR)) {
+    if (check(tokenType::BIT_OR)) {
         std::string op = LT(1).lexeme;
         match(tokenType::BIT_OR);
         auto right = xorExpr();
@@ -516,7 +520,8 @@ std::unique_ptr<Expressions>Parser::bitOrExpr() {
 }
 std::unique_ptr<Expressions>Parser::xorExpr() {
     auto expr = bitAndExpr();
-    while (check(tokenType::XOR)) {
+    if (check(tokenType::XOR)) {
+
         std::string op = LT(1).lexeme;
         match(tokenType::XOR);
         auto right = bitAndExpr();
@@ -526,9 +531,9 @@ std::unique_ptr<Expressions>Parser::xorExpr() {
 }
 std::unique_ptr<Expressions>Parser::bitAndExpr() {
     auto expr = shiftExpr();
-    while (check(tokenType::BIT_AND)) {
+    while (check(tokenType::SHIFT_LEFT)) {
         std::string op = LT(1).lexeme;
-        match(tokenType::BIT_AND);
+        match(tokenType::SHIFT_LEFT);
         auto right = shiftExpr();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
     }

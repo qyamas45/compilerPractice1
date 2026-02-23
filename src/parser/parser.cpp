@@ -11,6 +11,8 @@
 #include "../../include/AST/Statements/IfStatement.h"
 #include "../../include/AST/Statements/ForStatement.h"
 #include "../../include/AST/Statements/Statement.h"
+#include "../../include/AST/Statements/Return.h"
+#include "../../include/AST/Statements/Function.h"
 #include "../../include/AST/Statements/Var.h"
 #include "../../include/AST/Statements/WhileStatement.h"
 #include "../../include/AST/Expressions/Expressions.h"
@@ -159,7 +161,10 @@ std::unique_ptr<Statement> Parser::simpleStatement() {
         (LA(2) == tokenType::EQUAL  ||
         LA(2) == tokenType::MINUS_EQUAL ||
         LA(2) == tokenType::PLUS_EQUAL  ||
-        LA(2) == tokenType::DIV_EQUAL))
+        LA(2) == tokenType::DIV_EQUAL ||
+        LA(2) == tokenType::POWER_EQUAL ||
+        LA(2) == tokenType::MOD_EQUAL ||
+        LA(2) == tokenType::MUL_EQUAL))
     {
 
             return assignStatement();
@@ -191,7 +196,7 @@ std::unique_ptr<Assignment> Parser::assignStatement() {
     std::string op = LT(1).lexeme;
     match({tokenType::EQUAL, tokenType::MINUS_EQUAL,
         tokenType::PLUS_EQUAL, tokenType::DIV_EQUAL, tokenType::MUL_EQUAL,
-        tokenType::POWER_EQUAL});
+        tokenType::POWER_EQUAL, tokenType::MOD_EQUAL});
     auto val = parseExpression();
     if (check(tokenType::SEMI)) {
         match(tokenType::SEMI);
@@ -208,11 +213,14 @@ std::unique_ptr<Statement> Parser::ifStatement() {
     ifStatement->condition = parseExpression();
     //ifStatement.body.addAll(block());
     auto statements = block();
+
     ifStatement->body.insert(
       ifStatement->body.end(),
       std::make_move_iterator(statements.begin()),
       std::make_move_iterator(statements.end())
     );
+
+
     //if there is else if
     if (eatIfPresent(tokenType::ELIF)) {
         //elif condition
@@ -225,13 +233,16 @@ std::unique_ptr<Statement> Parser::ifStatement() {
     }
     //if there is an else
     if (eatIfPresent(tokenType::ELSE)) {
+
         auto blockStatement = block();
+
         ifStatement->elseStatement.insert(
           ifStatement->elseStatement.end(),
           std::make_move_iterator(blockStatement.begin()),
           std::make_move_iterator(blockStatement.end())
         );
     }
+
     return std::make_unique<IfStatement>(std::move(ifStatement->condition),
         std::move(ifStatement->body),
         std::move(ifStatement->elseStatement));
@@ -290,24 +301,84 @@ std::unique_ptr<Statement> Parser::forStatement() {
         std::move(forStatement->update));
 }
 std::unique_ptr<Statement> Parser::defStatement() {
+    //def name(...) type { ... }
+    //def
+    match(tokenType::DEF);
+    //match(tokenType::INDENT);
+    // name (
+    std::unique_ptr<Name> name = std::make_unique<Name>(LT(1).lexeme);
+    match(tokenType::INDENT);
+    match(tokenType::PARENL);
+    // ( ... )
 
+    std::vector<std::unique_ptr<Parameter>> params = ParameterList();
+    match(tokenType::PARENR);
+
+    std::unique_ptr<Type> returnType = type();
+    std::vector<std::unique_ptr<Statement>> body = block();
+
+    return std::make_unique<Function>(std::move(name), std::move(params),
+        std::move(returnType), std::move(body));
 }
+
 std::unique_ptr<Statement> Parser::classStatement() {
-
+    return nullptr;
 }
+
 std::unique_ptr<Statement> Parser::returnStatement() {
-
+    match(tokenType::RETURN);
+    std::unique_ptr<Expressions> expr = nullptr;
+    if (!check(tokenType::SEMI) && !check(tokenType::CURLYR)) {
+         expr = parseExpression();
+    }
+    if (check(tokenType::SEMI)) {
+        match(tokenType::SEMI);
+    }
+    return std::make_unique<Return>(std::move(expr));
 }
- std::vector<std::unique_ptr<Statement>> Parser::block() {
+
+std::vector<std::unique_ptr<Parameter>> Parser::ParameterList() {
+    std::vector<std::unique_ptr<Parameter>> params;
+    if (!check(tokenType::PARENR)) {
+        while (check(tokenType::INDENT)) {
+            std::string name = LT(1).lexeme;
+            match(tokenType::INDENT); // Parameter name
+            // Type might be optional or required? Based on example `p1 int`, it looks like `name type`.
+            // Let's assume type is required for now as per `var` declaration which enables type.
+            // Wait, `var` decl is `var name type = expr`.
+            // Here parameters are likely `name type`.
+            
+            std::unique_ptr<Type> paramType = type();
+
+            auto param = std::make_unique<Parameter>();
+
+            param->name = std::make_unique<Name>(std::move(name));
+            param->type = std::move(paramType);
+            
+            params.push_back(std::move(param));
+            if (check(tokenType::COMMA))
+                consume();
+            else
+                break;
+        }
+
+    }
+    return params;
+}
+std::vector<std::unique_ptr<Statement>> Parser::block() {
     match(tokenType::CURLYL);
     std::vector<std::unique_ptr<Statement>> statements;
-    while (check({tokenType::CURLYL, tokenType::ENDOFFILE})) {
+    //{ ... }
+    while (!check({tokenType::CURLYR, tokenType::ENDOFFILE})) {
         statements.push_back(parseStatement());
+
     }
+
     match(tokenType::CURLYR);
     if (check(tokenType::SEMI)) {
         match(tokenType::SEMI);
     }
+
     return statements;
 }
 std::unique_ptr<Type> Parser::type() {
@@ -373,9 +444,11 @@ std::unique_ptr<ExpressionStatement> Parser::parserExpressionStatement() {
 }
 std::unique_ptr<Expressions> Parser::parseExpression() {
     //logical operators here
+
     auto expr = orExpression();
     if (check(tokenType::ASSIGN) ){
         match(tokenType::ASSIGN);
+
         auto right = parseExpression();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), "=");
     }
@@ -383,10 +456,12 @@ std::unique_ptr<Expressions> Parser::parseExpression() {
 }
 std::unique_ptr<Expressions> Parser::orExpression() {
     auto expr = andExpression();
+
     //if there is expression | expression
-    if (check(tokenType::OR)) {
+    if (check(tokenType::BIT_OR)) {
+
         std::string op = LT(1).lexeme;
-        match(tokenType::OR);
+        match(tokenType::BIT_OR);
         auto right = andExpression();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
     }
@@ -394,10 +469,12 @@ std::unique_ptr<Expressions> Parser::orExpression() {
 }
 std::unique_ptr<Expressions>Parser::andExpression() {
     auto expr = notExpression();
+
     //if there is expression & expression
-    if (check(tokenType::AND)) {
+    if (check(tokenType::BIT_AND)) {
+
         std::string op = LT(1).lexeme;
-        match(tokenType::AND);
+        match(tokenType::BIT_AND);
         auto right = notExpression();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
     }
@@ -411,7 +488,7 @@ std::unique_ptr<Expressions>Parser::notExpression() {
     return comparison();
 }
 std::unique_ptr<Expressions>Parser::comparison() {
-    auto expr = atom();
+    auto expr = bitOrExpr();
     while (check({tokenType::EQUAL, tokenType::NOT_EQUAL, tokenType::LT,
         tokenType::LE, tokenType::GT, tokenType::GE, tokenType::IS
     }))
@@ -433,7 +510,7 @@ std::unique_ptr<Expressions>Parser::comparison() {
 }
 std::unique_ptr<Expressions>Parser::bitOrExpr() {
     auto expr = xorExpr();
-    while (check(tokenType::BIT_OR)) {
+    if (check(tokenType::BIT_OR)) {
         std::string op = LT(1).lexeme;
         match(tokenType::BIT_OR);
         auto right = xorExpr();
@@ -443,7 +520,8 @@ std::unique_ptr<Expressions>Parser::bitOrExpr() {
 }
 std::unique_ptr<Expressions>Parser::xorExpr() {
     auto expr = bitAndExpr();
-    while (check(tokenType::XOR)) {
+    if (check(tokenType::XOR)) {
+
         std::string op = LT(1).lexeme;
         match(tokenType::XOR);
         auto right = bitAndExpr();
@@ -453,9 +531,9 @@ std::unique_ptr<Expressions>Parser::xorExpr() {
 }
 std::unique_ptr<Expressions>Parser::bitAndExpr() {
     auto expr = shiftExpr();
-    while (check(tokenType::BIT_AND)) {
+    while (check(tokenType::SHIFT_LEFT)) {
         std::string op = LT(1).lexeme;
-        match(tokenType::BIT_AND);
+        match(tokenType::SHIFT_LEFT);
         auto right = shiftExpr();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
     }
@@ -473,10 +551,13 @@ std::unique_ptr<Expressions>Parser::shiftExpr() {
     return expr;
 }
 std::unique_ptr<Expressions>Parser::arithExpr() {
+
     auto expr = term();
-    while (check({tokenType::PLUS_EQUAL, tokenType::MINUS_EQUAL})) {
+    while (check({tokenType::PLUS, tokenType::MINUS})) {
+
         std::string op = LT(1).lexeme;
-        match({tokenType::PLUS_EQUAL, tokenType::MINUS_EQUAL});
+
+        match({tokenType::PLUS, tokenType::MINUS});
         auto right = term();
         expr = std::make_unique<BinaryOperator>(std::move(expr), std::move(right), op);
     }
@@ -517,6 +598,7 @@ std::unique_ptr<Expressions>Parser::power() {
 std::unique_ptr<Expressions> Parser::atom() {
 
     std::string literal = LT(1).lexeme;
+    //std::cout << literal << std::endl;
     // LiteralType | INT, REAL, STRING,
     //               BOOL, NONE, NAME
 

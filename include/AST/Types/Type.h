@@ -13,6 +13,7 @@ public:
 	virtual bool isIntType() const = 0;
 	virtual bool isFloatType() const = 0;
 	virtual bool isStringType() const = 0;
+	virtual bool isNoneType() const = 0;
 	void accept(ASTVisitor& v) override {
 		v.visit(*this);
 	}

@@ -10,12 +10,36 @@
 #include "../../include/AST/Expressions/IntLiteral.h"
 #include "../../include/AST/Expressions/RealLiteral.h"
 #include "../../include/AST/Statements/Print.h"
+#include "AST/Expressions/Group.h"
+#include "AST/Statements/Function.h"
+#include "AST/Statements/IfStatement.h"
 
 void PrintVisitor::visit(Program &program) {
     std::cout << "Program Started!" << std::endl;
     for (auto& child: program.children) {
         child->accept(*this);
     }
+}
+void PrintVisitor::visit(Function& func) {
+    std::cout << "Function Declaration!" << std::endl;
+    func.name->accept(*this);
+    for (auto& param : func.params) {
+        param->accept(*this);
+    }
+    for (auto& child : func.statements) {
+        child->accept(*this);
+    }
+
+
+}
+void PrintVisitor::visit(Return& returnStatement) {
+    std::cout << "Return Statement!" << std::endl;
+}
+void PrintVisitor::visit(Parameter& parameter) {
+    std::cout << "Visited Parameter!" << std::endl;
+    parameter.name->accept(*this);
+    parameter.type->accept(*this);
+
 }
 void PrintVisitor::visit(Statement& statement) {
     std::cout << "Visited Statement!" << std::endl;
@@ -24,24 +48,43 @@ void PrintVisitor::visit(Statement& statement) {
         child->accept(*this);
     }
 }
+
 void PrintVisitor::visit(Assignment&) {
     std::cout << "Visited Assignment!" << std::endl;
 }
 void PrintVisitor::visit(Name&) {
     std::cout << "Visited Name!" << std::endl;
+
 }
 void PrintVisitor::visit(Expressions&) {
     std::cout << "Visited Expressions!" << std::endl;
 }
-void PrintVisitor::visit(IfStatement&) {
+void PrintVisitor::visit(IfStatement& ifStatement) {
     std::cout << "Visited IfStatement!" << std::endl;
+
+    //if (...)
+    if (ifStatement.condition != nullptr)
+        ifStatement.condition->accept(*this);
+    // if () {
+    //      ...
+    // }
+    for (auto& child: ifStatement.body)
+        child->accept(*this);
+    //
+    //
+    for (auto& child: ifStatement.elseStatement)
+        child->accept(*this);
+
 }
 void PrintVisitor::visit(Type& Type) {
     std::cout << "Visited Type!" << std::endl;
+    std::cout << "Type: " << Type.toString() << std::endl;
 }
 
-void PrintVisitor::visit(Group&) {
+void PrintVisitor::visit(Group& g) {
     std::cout << "Visited Group!" << std::endl;
+    if (g.expr != nullptr)
+        g.expr->accept(*this);
 }
 void PrintVisitor::visit(NotOperator&) {
     std::cout << "Visited NotOperator!" << std::endl;

@@ -32,6 +32,9 @@ class lexer {
     bool isEOF() const;
     bool isDigit() const;
     bool isAlpha() const;
+
+    bool isHexDigit() const;
+
     bool isLetter() const;
     Token nextToken();
     Token comment();

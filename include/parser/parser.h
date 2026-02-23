@@ -13,6 +13,7 @@
 #include <utility>
 #include <vector>
 
+#include "AST/Parameter.h"
 #include "AST/Statements/Assignment.h"
 #include "AST/Statements/ExpressionStatement.h"
 #include "AST/Statements/Var.h"
@@ -75,6 +76,8 @@ private:
     std::unique_ptr<Statement> defStatement();
     std::unique_ptr<Statement> classStatement();
     std::unique_ptr<Statement> returnStatement();
+
+    std::vector<std::unique_ptr<Parameter>> ParameterList();
 
     std::vector<std::unique_ptr<Statement>> blocks();
 

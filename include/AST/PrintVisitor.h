@@ -11,7 +11,10 @@
 class PrintVisitor : public ASTVisitor{
 public:
     void visit(Program& program) override;
+    void visit(Function& function) override;
+    void visit(Return& ret) override;
     void visit(Statement& statement) override;
+    void visit(Parameter& parameter) override;
     void visit(Assignment& assignment) override;
     void visit(Name& name) override;
     void visit(Expressions& expressions) override;

@@ -1,0 +1,7 @@
+var a int = 5
+var b int = 10
+var c int = a + b
+var d int = b - a
+var e int = a * b
+var f int = b / a
+print "Arithmetic expressions parsed"

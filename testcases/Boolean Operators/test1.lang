@@ -1,0 +1,8 @@
+var a bool = true
+var b bool = false
+var c bool = a & b
+var d bool = a | b
+var e bool = not a
+var f bool = a ^ b
+
+print "Boolean operations parsed"

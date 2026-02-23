@@ -17,10 +17,14 @@ $(TARGET): $(OBJS)
 	$(CXX) $(OBJS) -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
-	@mkdir -p $(dir $@)
+	@if not exist "$(dir $@)" mkdir "$(dir $@)"
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
+ifeq ($(OS),Windows_NT)
+	rmdir /s /q build
+	rmdir /s /q lexicon
+else
 	rm -rf $(BUILD_DIR) $(TARGET)
-
+endif
 .PHONY: all clean

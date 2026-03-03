@@ -4,5 +4,11 @@ var c bool = a & b
 var d bool = a | b
 var e bool = not a
 var f bool = a ^ b
-
+var g bool = a == b
+var h bool = a != b
+var i bool = a > b
+var j bool = a < b
+var k bool = a <= b
+var l bool = a >= b
+var m bool = a <> b
 print "Boolean operations parsed"

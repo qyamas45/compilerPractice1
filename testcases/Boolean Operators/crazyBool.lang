@@ -1,0 +1,5 @@
+var a bool = true & true
+var b bool = false & false
+var c bool = (a & b) | (b & a)
+var d bool = (a | b) & (b | a)
+var e bool = (a < (b == a))

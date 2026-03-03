@@ -383,7 +383,7 @@ Token lexer::nextToken() {
                     return Token(tokenType::SHIFT_RIGHT, ">>", loc.copy());
                 }
                 if (ch == '=') {
-                    consume();
+                     consume();
                     loc.columns(1);
                     return Token(tokenType::GE, ">=", loc.copy());
                 }

@@ -4,5 +4,7 @@ var c bool = a & b
 var d bool = a | b
 var e bool = not a
 var f bool = a ^ b
+var g bool = not(a & b)
+var h bool = g ^ f
 
 print "Boolean operations parsed"

@@ -32,7 +32,7 @@ public:
     Token LT(int index);
 
     tokenType LA(int index);
-
+    void setDebugMode(bool val);
     //Entry
     std::unique_ptr<Program> parseProgram();
     int pos;
@@ -100,10 +100,12 @@ private:
     bool check(std::initializer_list<tokenType> types);
     void match(tokenType type);
     bool match(std::initializer_list<tokenType> types);
+    
     //variables
     lexer* input;
     size_t current;
     std::vector<Token> lookahead;
+    bool debugMode = false;
 
 
 

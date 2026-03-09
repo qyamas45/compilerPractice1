@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
+#include <string>
 #include "../include/lexer/lexer.h"
 #include "../include/lexer/token.h"
 #include "../include/parser/parser.h"
@@ -10,14 +11,24 @@
 #define RESET   "\033[0m"
 #define GREEN   "\033[32m"
 #define RED     "\033[31m"
-int main()
+int main(int argc, char* argv[])
 {
     std::string testDir = "testcases";
     bool allPassed = true;
-
+    bool debugMode = false;
     if (!std::filesystem::exists(testDir)) {
         std::cerr << "Test directory not found: " << testDir << std::endl;
         return 1;
+    }
+ 
+    std::string debugModeStr = "";
+    if (argc > 1)
+        debugModeStr = argv[1];
+
+    if (debugModeStr == "true")
+    {
+        debugMode = true;
+        std::cout << debugMode << std::endl;
     }
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(testDir)) {
@@ -33,7 +44,12 @@ int main()
             auto* parser = new Parser(lex);
             
             try {
+                PrintVisitor printer;
+                parser->setDebugMode(debugMode);
                 auto ast = parser->parseProgram();
+                
+                if(debugMode)
+                    ast->accept(printer);
                 if (ast) {
                     std::cout << GREEN << "  -> PASSED" << RESET << std::endl;
                 } else {

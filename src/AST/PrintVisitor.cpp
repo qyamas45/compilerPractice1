@@ -116,6 +116,8 @@ void PrintVisitor::visit(Print& print) {
     //visit the value that is being printed
     print.expressions->accept(*this);
 }
+
+
 void PrintVisitor::visit(Var& var) {
     std::cout << "Visited Var!" << std::endl;
     std::cout << "Type: " << var.type->toString() << std::endl;

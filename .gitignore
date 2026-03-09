@@ -1,6 +1,9 @@
 makefile
 lexicon.exe
 lexicon
+build
+makefile
+makefile
 build/
-makefile
-makefile
+build/src
+

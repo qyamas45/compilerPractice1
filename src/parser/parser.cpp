@@ -37,6 +37,11 @@
 #include "AST/Types/NoneType.h"
 #include "AST/Types/StringType.h"
 
+
+void Parser::setDebugMode(bool s)
+{
+    debugMode = s;
+}
 //util functions
 /*
  *  Function name: fill
